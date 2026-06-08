@@ -1,7 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { LogIn, Smile } from 'lucide-react';
+import Image from 'next/image';
+import { LogIn } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 const INK = '#1A1040';
@@ -40,12 +41,8 @@ export default function LoginPage() {
         style={{ border: `2.5px solid ${INK}`, boxShadow: `8px 8px 0 ${INK}`, borderRadius: '16px' }}
       >
         {/* Logo block */}
-        <div
-          className="mx-auto mb-6 flex h-20 w-20 items-center justify-center"
-          style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}`, borderRadius: '16px' }}
-          aria-hidden="true"
-        >
-          <Smile size={40} style={{ color: INK }} aria-hidden="true" />
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center" aria-hidden="true">
+          <Image src="/logo.png" alt="SmileChain" width={80} height={80} className="rounded-2xl" priority />
         </div>
 
         <h1

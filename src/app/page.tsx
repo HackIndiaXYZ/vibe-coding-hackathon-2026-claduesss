@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Smile, Zap, Gift, Users, Lock, Star, Camera, ArrowRight, TrendingUp, Shield } from 'lucide-react';
 import SmilePlayground from '@/components/SmilePlayground';
 import type { Variants } from 'framer-motion';
@@ -61,12 +62,7 @@ export default function Home() {
         className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white"
         style={{ borderBottom: '2.5px solid #1A1040', boxShadow: '0 3px 0 #1A1040' }}
       >
-        <span
-          className="text-2xl font-black tracking-tight"
-          style={{ fontFamily: 'var(--font-nunito)', color: '#1A1040' }}
-        >
-          Smile<span style={{ color: '#FF6B35' }}>Chain</span>
-        </span>
+        <Image src="/logo.png" alt="SmileChain" width={40} height={40} className="rounded-lg" priority />
 
         <Link href="/login" className="nb-btn" style={{ padding: '9px 22px', fontSize: '14px' }}>
           Sign In <ArrowRight size={14} />

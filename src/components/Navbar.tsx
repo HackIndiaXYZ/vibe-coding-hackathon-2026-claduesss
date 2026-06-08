@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Home, Compass, Search, Upload, Bell, User, Settings } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -30,12 +31,8 @@ export default function Navbar() {
         style={{ borderRight: `2.5px solid ${INK}`, boxShadow: `4px 0 0 ${INK}` }}
       >
         {/* Logo */}
-        <Link
-          href="/feed"
-          className="block mb-10 text-2xl font-black tracking-tight"
-          style={{ fontFamily: 'var(--font-nunito)', color: INK }}
-        >
-          Smile<span style={{ color: '#FF6B35' }}>Chain</span>
+        <Link href="/feed" className="block mb-10" aria-label="SmileChain home">
+          <Image src="/logo.png" alt="SmileChain" width={44} height={44} className="rounded-xl" priority />
         </Link>
 
         {/* Nav links */}
