@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://smilechain.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://smilechain.ashwinsi.in";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

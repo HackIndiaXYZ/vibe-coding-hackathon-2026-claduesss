@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://smilechain.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://smilechain.ashwinsi.in";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
