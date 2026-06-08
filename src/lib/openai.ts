@@ -3,28 +3,33 @@ import type { SmileTier } from '@/types';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const TIER_PROMPTS: Record<SmileTier, string> = {
-  beam:  'a huge, ear-to-ear, genuine beam smile (score: very high)',
-  big:   'a big, warm, joyful smile (score: high)',
-  mild:  'a gentle, subtle, happy smile (score: moderate)',
-  none:  'a neutral, calm expression (score: low)',
-};
-
 export async function generateCaption(score: number, tier: SmileTier): Promise<string> {
-  const description = TIER_PROMPTS[tier];
+  const smilePercent = Math.round(score * 100);
+
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    max_tokens: 60,
+    model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+    max_tokens: 120,
+    response_format: { type: 'json_object' },
     messages: [
       {
         role: 'system',
-        content: 'You write short, warm, emoji-friendly captions for social media posts. Keep it under 15 words. Be positive and match the smile energy.',
+        content: `You generate social media post descriptions for SmileChain, a platform where smile intensity is a currency.
+Respond only with valid JSON in this format:
+{ "caption": "<your caption here>" }
+Rules:
+- Max 20 words
+- Warm, fun, positive tone
+- Match the energy of the smile score
+- No hashtags`,
       },
       {
         role: 'user',
-        content: `Write a caption for a photo with ${description}. Smile intensity: ${Math.round(score * 100)}%.`,
+        content: `This person has a smile score of ${smilePercent}% (tier: ${tier}). Write a post description for their SmileChain post.`,
       },
     ],
   });
-  return completion.choices[0]?.message?.content?.trim() ?? 'Spreading smiles ✨';
+
+  const raw = completion.choices[0]?.message?.content ?? '{}';
+  const parsed = JSON.parse(raw) as { caption?: string };
+  return parsed.caption?.trim() ?? '';
 }
