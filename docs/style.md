@@ -2,261 +2,260 @@
 
 ## Philosophy
 
-Every visual decision reinforces the core emotion: **the joy of a genuine smile**. Warm, radiant, and energetic — like sunshine breaking through. No cold blues. No corporate grays. Every screen should feel like it's smiling back at you.
+**Neo-Brutalism** applied to joy. Bold borders, hard shadows, flat colors — but warm, playful, and emotionally expressive. Every visual decision reinforces the core emotion: **the genuine happiness of a smile**. Raw edges with a golden heart.
+
+---
+
+## Design Style: Neo-Brutalism
+
+### Core Rules
+| Property | Value |
+|---|---|
+| Borders | `2.5px solid #1A1040` on all interactive elements |
+| Box Shadow | Hard offset — `5px 5px 0 #1A1040` (no blur, no spread) |
+| Hover | `transform: translate(-3px, -3px)` + shadow grows to `7px 7px 0` |
+| Active/Press | `transform: translate(+3px, +3px)` + shadow shrinks to `2px 2px 0` |
+| Border Radius | `10px` (slightly soft, not sharp brutalism) |
+| Backgrounds | Flat color fills — no gradients, no glassmorphism, no blur |
+| Typography | `font-weight: 900` headings, `font-weight: 700` body |
 
 ---
 
 ## Color Palette
 
-### Primary — Sunshine Yellow
-The dominant brand color. Evokes warmth, optimism, and the glow of a genuine smile.
+### Ink (replaces black)
+The primary border and shadow color. Deep indigo — dark enough for full neo-brutalism contrast, with warmth that complements the yellow/orange brand.
 
 | Name | Hex | Usage |
 |---|---|---|
-| `smile-50` | `#FFFBEB` | Page backgrounds, card backgrounds |
-| `smile-100` | `#FEF3C7` | Hover states, subtle fills |
-| `smile-300` | `#FCD34D` | Borders, dividers |
-| `smile-400` | `#FBBF24` | Secondary buttons, badges |
-| `smile-500` | `#FFD93D` | **Primary brand yellow** — buttons, highlights |
-| `smile-600` | `#F59E0B` | Button hover states |
+| `ink` | `#1A1040` | All borders, all box-shadows, primary text |
+
+### Primary — Sunshine Yellow
+The dominant brand color. Buttons, highlights, section backgrounds, badges.
+
+| Name | Hex | Usage |
+|---|---|---|
+| `yellow` | `#FFD93D` | **Primary brand yellow** — buttons, How It Works section bg, labels |
 
 ### Secondary — Warm Orange
-The "energy of a smile" — the moment a smile breaks into a full beam. Used for accents, scores, and points.
+Energy of a full smile. CTAs, accent elements, points, tier indicators.
 
 | Name | Hex | Usage |
 |---|---|---|
-| `glow-400` | `#FB923C` | Smile score badges, tier indicators |
-| `glow-500` | `#FF6B35` | **Primary accent** — CTAs, smile tier chips |
-| `glow-600` | `#EA580C` | Hover on accent elements |
+| `orange` | `#FF6B35` | Accent CTAs, tier 3 card bg, captured results |
 
-### Supporting Colors
+### Supporting
 
 | Name | Hex | Usage |
 |---|---|---|
-| `warm-white` | `#FFFBF0` | Page background (warm, not pure white) |
-| `soft-gray` | `#6B7280` | Secondary text, metadata |
-| `charcoal` | `#1F2937` | Primary text |
-| `success` | `#10B981` | Follow accepted, gifted confirmation |
-| `muted` | `#F3F4F6` | Disabled states, locked profile bg |
+| `cream` | `#FFFBF0` | Page background (warm, not pure white) |
+| `white` | `#FFFFFF` | Card surfaces |
+| `coral` | `#FF3D00` | Beam tier card, AI Captions feature card |
+| `success` | `#00C48C` | Points earned, follow accepted |
+| `muted-text` | `#6B7280` | Secondary text, descriptions |
+| `faint-text` | `#9CA3AF` | Labels, timestamps, metadata |
 
 ### Smile Tier Colors
-Used specifically in score reveals and tier badges:
 
-| Tier | Color | Hex |
-|---|---|---|
-| 😐 None | Muted gray | `#9CA3AF` |
-| 😊 Mild | Warm yellow | `#FFD93D` |
-| 😄 Big | Bright orange | `#FF6B35` |
-| 😁 Beam | Deep coral | `#FF3D00` |
+| Tier | Emoji | Background | Text |
+|---|---|---|---|
+| None | 😐 | `#F3F4F6` | `#1A1040` |
+| Mild | 😊 | `#FFD93D` | `#1A1040` |
+| Big | 😄 | `#FF6B35` | `#ffffff` |
+| Beam | 😁 | `#FF3D00` | `#ffffff` |
+
+### Section Backgrounds
+
+| Section | Background |
+|---|---|
+| Hero | `#FFFBF0` (cream) |
+| Marquee strip | `#1A1040` (ink) with yellow text |
+| How It Works | `#FFD93D` (yellow) |
+| Smile Tiers | `#FFFFFF` |
+| Features Bento | `#FFFBF0` (cream) |
+| Final CTA | `#1A1040` (ink) with white text |
+| Footer | `#FFFFFF` |
 
 ---
 
 ## Typography
 
-**Font: [Nunito](https://fonts.google.com/specimen/Nunito)**
-Rounded, friendly, approachable. Feels like a smile in letterform.
+**Heading font: [Nunito](https://fonts.google.com/specimen/Nunito)** — rounded, friendly, bold.
+**Body font: [DM Sans](https://fonts.google.com/specimen/DM+Sans)** — clean, readable, modern.
 
 ```css
---font-sans: 'Nunito', sans-serif;
+--font-display: 'Nunito', sans-serif;
+--font-sans:    'DM Sans', sans-serif;
 ```
 
 | Role | Weight | Size | Usage |
 |---|---|---|---|
-| Display | 800 | 2.25rem / 36px | Landing headline |
-| Heading 1 | 700 | 1.875rem / 30px | Page titles |
-| Heading 2 | 700 | 1.5rem / 24px | Section headers |
-| Heading 3 | 600 | 1.25rem / 20px | Card titles, usernames |
-| Body | 500 | 1rem / 16px | Default text |
-| Small | 500 | 0.875rem / 14px | Metadata, timestamps |
-| Micro | 400 | 0.75rem / 12px | Labels, badges |
+| Hero H1 | 900 | clamp(52px, 8vw, 100px) | Landing hero |
+| Section H2 | 900 | clamp(32px, 5vw, 56px) | Section titles |
+| Card title | 900 | 18–24px | Feature/step titles |
+| Body | 600 | 16px | Descriptions |
+| Meta / label | 700–900 | 11px, uppercase, tracked | Tags, pills, badges |
 
 ---
 
 ## Spacing & Layout
 
-- **Base unit:** 4px
-- **Container max-width:** 640px (mobile-first, centered)
-- **Card padding:** 16px
-- **Section gap:** 24px
-- **Border radius:** 16px (cards), 12px (buttons), 999px (pills/badges)
+- **Base unit:** 4px grid
+- **Page max-width:** `max-w-5xl` (1024px) for content sections
+- **Section padding:** `py-24` (96px vertical)
+- **Card padding:** `p-6` to `p-8`
+- **Gap between cards:** `gap-5` or `gap-6`
+- **Border radius:** `10px` uniform (CSS var `--nb-radius`)
 
 ---
 
-## Component Styles
+## Components
 
 ### Buttons
 
-**Primary (Yellow CTA)**
+**Primary (Yellow)**
+```css
+background: #FFD93D;
+color: #1A1040;
+border: 2.5px solid #1A1040;
+box-shadow: 5px 5px 0 #1A1040;
+border-radius: 10px;
+font-weight: 900;
+padding: 13px 28px;
+/* Hover: translate(-2px,-2px), shadow → 7px 7px */
+/* Active: translate(+3px,+3px), shadow → 2px 2px */
 ```
-bg-smile-500 text-charcoal font-700 rounded-full px-6 py-3
-hover:bg-smile-600 active:scale-95
-transition: all 150ms ease
-shadow: 0 4px 14px rgba(255, 217, 61, 0.4)
-```
+CSS class: `.nb-btn`
 
-**Secondary (Orange Accent)**
-```
-bg-glow-500 text-white font-700 rounded-full px-6 py-3
-hover:bg-glow-600 active:scale-95
-shadow: 0 4px 14px rgba(255, 107, 53, 0.35)
-```
-
-**Ghost**
-```
-border-2 border-smile-400 text-charcoal bg-transparent rounded-full px-6 py-3
-hover:bg-smile-50
-```
+**Orange Variant** — `.nb-btn.nb-btn-orange`
+**Ink/Dark Variant** — `.nb-btn.nb-btn-black` (uses `#1A1040`)
+**White Variant** — `.nb-btn.nb-btn-white`
+**Ghost Variant** — `.nb-btn.nb-btn-ghost` (transparent bg)
 
 ### Cards
+```css
+background: #ffffff;
+border: 2.5px solid #1A1040;
+box-shadow: 5px 5px 0 #1A1040;
+border-radius: 10px;
+/* Hover: translate(-3px,-3px), shadow → 7px 7px */
 ```
-bg-white rounded-2xl shadow-sm border border-smile-100
-hover:shadow-md transition-shadow duration-200
-```
+CSS class: `.nb-card`
 
-### Smile Score Badge
+### Labels / Section Tags
+```css
+background: #FFD93D;
+color: #1A1040;
+border: 2.5px solid #1A1040;
+box-shadow: 3px 3px 0 #1A1040;
+border-radius: 6px;
+font-size: 11px;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.09em;
 ```
-rounded-full px-3 py-1 font-700 text-sm
-Tier colors applied (see Smile Tier Colors above)
-```
+CSS class: `.nb-label`
 
-### Post Feed
-- Max width 640px, centered
-- Cards stacked vertically, gap-4
-- Avatar + username top left, timestamp top right
-- Image fills card width, rounded-xl
-- Smile tier badge overlaid bottom-left on image
-- AI caption below image in italic
-- Gift button bottom right with point count
+### Inputs
+```css
+background: #ffffff;
+border: 2.5px solid #1A1040;
+box-shadow: 3px 3px 0 #1A1040;
+border-radius: 10px;
+padding: 12px 16px;
+font-weight: 600;
+/* Focus: shadow → 5px 5px, translate(-1px,-1px) */
+```
+CSS class: `.nb-input`
 
 ---
 
 ## Animations
 
-All animations via **Framer Motion** (`framer-motion` package). Use `motion` components and `AnimatePresence` throughout. No CSS keyframe animations — keep everything in Framer Motion for consistency and control.
+Framer Motion (`framer-motion`) for all scroll-triggered and entrance animations.
 
-### Install
-```bash
-npm install framer-motion
+### Page/section reveals
+```tsx
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+};
+const stagger: Variants = {
+  hidden: {},
+  show:   { transition: { staggerChildren: 0.1 } },
+};
 ```
 
-### Page Transitions
-Wrap route content in `AnimatePresence`. Each page fades + slides up on enter, fades out on exit.
-```tsx
-// Shared page wrapper variant
-initial:  { opacity: 0, y: 24 }
-animate:  { opacity: 1, y: 0 }
-exit:     { opacity: 0, y: -12 }
-transition: { duration: 0.35, ease: 'easeOut' }
+### Card interactions (neo-brutalism press)
+```css
+transition: transform 0.12s ease, box-shadow 0.12s ease;
+:hover  → translate(-3px, -3px) + shadow 7px 7px 0 #1A1040
+:active → translate(+3px, +3px) + shadow 2px 2px 0 #1A1040
 ```
 
-### Homepage — Section Reveals (scroll-triggered)
-Use `whileInView` + `viewport={{ once: true }}` on each section.
-```tsx
-initial:  { opacity: 0, y: 40 }
-whileInView: { opacity: 1, y: 0 }
-transition: { duration: 0.6, ease: 'easeOut' }
-```
-Stagger children using `staggerChildren: 0.1` on the parent `variants`.
-
-### Smile Score Reveal (key UI moment)
-```tsx
-initial:  { scale: 0, opacity: 0, filter: 'blur(10px)' }
-animate:  { scale: 1, opacity: 1, filter: 'blur(0px)' }
-transition: { type: 'spring', stiffness: 260, damping: 20, delay: 0.3 }
+### Marquee (social proof strip)
+```css
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+animation: marquee 24s linear infinite;
 ```
 
-### Confetti (Beam tier only)
-- Trigger: `smile_tier === 'beam'`
-- Library: `canvas-confetti`
-- Colors: `#FFD93D`, `#FF6B35`, `#FF3D00`, `#FFF`
-- Duration: 3 seconds, spread 120°
-
-### Point Popup (on gift)
-```tsx
-// Floating +1 that fades out upward
-initial:  { opacity: 1, y: 0 }
-animate:  { opacity: 0, y: -40 }
-transition: { duration: 0.8, ease: 'easeOut' }
-```
-Mount/unmount with `AnimatePresence`.
-
-### Feed Card Entry (staggered list)
-```tsx
-// Parent
-variants: { show: { transition: { staggerChildren: 0.08 } } }
-
-// Each card
-variants: {
-  hidden: { opacity: 0, y: 20 },
-  show:   { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200 } }
+### Floating emoji deco
+```css
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(3deg); }
+  66%       { transform: translateY(-5px) rotate(-2deg); }
 }
 ```
 
-### Follow Button State Change
-```tsx
-whileTap: { scale: 0.92 }
-// Layout animation handles color/text transition
-transition: { type: 'spring', stiffness: 300, damping: 22 }
+### CTA pulse
+```css
+@keyframes nb-pulse {
+  0%, 100% { box-shadow: 5px 5px 0 #1A1040; }
+  50%       { box-shadow: 10px 10px 0 #1A1040; }
+}
 ```
 
-### Notification Bell Badge
-```tsx
-// Unread count badge pops in
-initial:  { scale: 0 }
-animate:  { scale: 1 }
-transition: { type: 'spring', stiffness: 400, damping: 15 }
-```
-
-### Navbar (app layout)
-```tsx
-// Slides down on mount
-initial:  { y: -60, opacity: 0 }
-animate:  { y: 0, opacity: 1 }
-transition: { duration: 0.4, ease: 'easeOut' }
-```
-
-### Modal / Dialog Open
-Use `AnimatePresence` + `motion.div`:
-```tsx
-initial:  { opacity: 0, scale: 0.95 }
-animate:  { opacity: 1, scale: 1 }
-exit:     { opacity: 0, scale: 0.95 }
-transition: { duration: 0.2 }
-```
+### Confetti (Beam tier only)
+- Library: `canvas-confetti`
+- Colors: `#FFD93D`, `#FF6B35`, `#FF3D00`
+- Trigger: `smile_tier === 'beam'`, 4s cooldown
 
 ---
 
 ## Icons
 
-Use **Lucide React** for all UI icons. Key icons:
+Use **Lucide React** exclusively. Key icons:
 
 | Action | Icon |
 |---|---|
-| Notifications | `Bell` |
-| Upload | `Camera` |
-| Home/Feed | `Home` |
-| Explore | `Compass` |
-| Search | `Search` |
-| Profile | `User` |
-| Gift | `Gift` (or 😊 emoji) |
-| Follow | `UserPlus` |
-| Settings | `Settings` |
-| Lock (private) | `Lock` |
-| Back | `ArrowLeft` |
+| Smile detection | `Smile` |
+| Earn / AI | `Zap` |
+| Gift | `Gift` |
+| Follow / Circle | `Users` |
+| Private / Lock | `Lock` |
+| Stars / Feature | `Star` |
+| Camera / Playground | `Camera` |
+| Navigate | `ArrowRight` |
+| Security | `Shield` |
+| Trending | `TrendingUp` |
 
 ---
 
 ## Tone & Copy
 
-- Warm, playful, encouraging
-- Never punish a low smile score — reframe as "try again"
+- Bold, punchy, direct — matches the neo-brutalism aesthetic
+- Never punish a low smile score — "try again with good lighting"
 - Use second person ("your smile", "you earned")
-- Exclamation points used sparingly — save for beam tier moments
-- Emoji used contextually in captions and tier badges, not in UI chrome
+- Beam tier moments get exclamation points
+- No emoji in UI chrome — only in smile tier indicators and captions
 
 **Microcopy examples:**
 - Upload CTA: "Share your smile"
 - No posts yet: "Be the first to smile here 😄"
-- Private profile locked: "Follow to see their smiles"
-- 0 pt score: "No face detected — try again with good lighting!"
+- Private locked: "Follow to see their smiles"
+- 0 pts: "No face detected — try again with good lighting!"
 - Gift sent: "You just made someone smile harder 😊"

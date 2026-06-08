@@ -17,12 +17,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!profile?.username) redirect('/onboarding');
 
   return (
-    <div className="relative flex flex-col min-h-screen overflow-hidden" style={{ background: 'var(--background)' }}>
-      {/* Animated Background Blobs */}
-      <div className="hero-blob-1" aria-hidden="true"></div>
-      <div className="hero-blob-2" aria-hidden="true"></div>
+    <div className="flex min-h-screen" style={{ background: '#FFFBF0' }}>
       <Navbar />
-      <main className="flex-1 mb-nav">
+      <main className="flex-1 md:ml-0 mb-nav md:mb-0 min-h-screen" style={{ background: '#FFFBF0' }}>
         {children}
       </main>
     </div>

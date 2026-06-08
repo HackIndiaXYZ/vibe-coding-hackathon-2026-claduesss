@@ -1,45 +1,53 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ── Design Tokens ── */
 :root {
-  --background: #FFFBF0;
-  --foreground: #1F2937;
+  --background: #fffbf0;
+  --foreground: #0a0a0a;
 
-  --smile-50:  #FFFBEB;
-  --smile-100: #FEF3C7;
-  --smile-300: #FCD34D;
-  --smile-400: #FBBF24;
-  --smile-500: #FFD93D;
-  --smile-600: #F59E0B;
+  /* Explicitly define black for your utility fallbacks */
+  --black: #0a0a0a;
+  --yellow: #ffd93d;
+  --orange: #ff6b35;
+  --coral: #ff3d00;
+  --ink: #1a1040;
+  --white: #ffffff;
+  --cream: #fffbf0;
+  --success: #00c48c;
 
-  --glow-400: #FB923C;
-  --glow-500: #FF6B35;
-  --glow-600: #EA580C;
+  /* Neo-brutalism shadows - updated to use --ink for consistency */
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --shadow-md: 5px 5px 0 var(--ink);
+  --shadow-lg: 7px 7px 0 var(--ink);
+  --shadow-xl: 10px 10px 0 var(--ink);
 
-  --soft-gray: #6B7280;
-  --charcoal:  #1F2937;
-  --success:   #10B981;
-  --muted:     #F3F4F6;
-  --coral:     #FF3D00;
-
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  --nb-border: 2.5px solid var(--ink);
+  --nb-radius: 10px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Expose your beautiful brutalist palette to Tailwind utility classes too! */
+  --color-yellow: var(--yellow);
+  --color-orange: var(--orange);
+  --color-coral: var(--coral);
+  --color-ink: var(--ink);
+  --color-cream: var(--cream);
+  --color-success: var(--success);
+
   --font-sans: 'DM Sans', sans-serif;
   --font-display: 'Nunito', sans-serif;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--cream);
+  color: var(--black); /* Now strictly resolves to #0a0a0a */
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -47,7 +55,9 @@ body {
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -55,207 +65,211 @@ body {
 }
 
 /* ── Keyframes ── */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33%       { transform: translateY(-14px) rotate(4deg); }
-  66%       { transform: translateY(-6px) rotate(-3deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+  66% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
 }
 
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(-5deg); }
-  50%       { transform: translateY(-18px) rotate(5deg); }
-}
-
-@keyframes scalePop {
-  0%   { opacity: 0; transform: scale(0.7); }
-  80%  { transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+@keyframes nb-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-md);
+  }
+  50% {
+    box-shadow: var(--shadow-xl);
+  }
 }
 
-@keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0 rgba(255, 217, 61, 0.5); }
-  70%  { box-shadow: 0 0 0 18px rgba(255, 217, 61, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 217, 61, 0); }
+/* ── Focus ── */
+:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
 }
 
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-30px); }
-  to   { opacity: 1; transform: translateX(0); }
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+  border-left: 2px solid var(--black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--yellow);
+  border: 2px solid var(--black);
 }
 
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ════════════════════════════════════
+   NEO-BRUTALISM CORE COMPONENTS
+════════════════════════════════════ */
+
+/* ── Card ── */
+.nb-card {
+  border: var(--nb-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--nb-radius);
+  background: var(--white); /* Swapped straight hex #fff for token variable */
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.nb-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-lg);
+}
+.nb-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink); /* Swapped raw hex for variable */
 }
 
-/* ── Utility Classes ── */
-.animate-fade-up   { animation: fadeInUp 0.7s ease forwards; }
-.animate-fade-down { animation: fadeInDown 0.6s ease forwards; }
-.animate-float     { animation: float 4s ease-in-out infinite; }
-.animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
-.animate-scale-pop { animation: scalePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-.animate-spin-slow { animation: spin-slow 20s linear infinite; }
-.animate-pulse-ring { animation: pulse-ring 2.5s ease-out infinite; }
-
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-.delay-600 { animation-delay: 0.6s; }
-.delay-700 { animation-delay: 0.7s; }
-.delay-800 { animation-delay: 0.8s; }
-
-.opacity-0-init { opacity: 0; }
-
-/* ── Gradient text ── */
-.gradient-text {
-  background: linear-gradient(135deg, #FF6B35 0%, #FFD93D 50%, #FF6B35 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 3s linear infinite;
-}
-
-/* ── Wave section divider ── */
-.wave-divider { position: relative; }
-.wave-divider::before {
-  content: '';
-  position: absolute;
-  top: -2px; left: 0; right: 0;
-  height: 60px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23FFFBF0' d='M0,30 C360,60 1080,0 1440,30 L1440,0 L0,0 Z'/%3E%3C/svg%3E") no-repeat center;
-  background-size: cover;
-  z-index: 10;
-}
-
-/* ── Card interactions ── */
-.card-hover {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* ── Buttons ── */
+.nb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border: var(--nb-border);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--nb-radius);
+  font-weight: 900;
+  font-size: 15px;
   cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+  min-height: 48px;
+  white-space: nowrap;
+  background: var(--yellow);
+  color: var(--black);
+  text-decoration: none;
 }
-.card-hover:hover { transform: translateY(-6px); }
-
-/* ── Step connector ── */
-.step-line::after {
-  content: '';
-  position: absolute;
-  top: 28px;
-  left: calc(50% + 28px);
-  width: calc(100% - 56px);
-  height: 2px;
-  background: linear-gradient(90deg, #FFD93D, #FF6B35);
-  border-radius: 2px;
+.nb-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
 }
-@media (max-width: 768px) { .step-line::after { display: none; } }
+.nb-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 var(--ink); /* Swapped raw hex for variable */
+}
 
-/* ── Skeleton shimmer ── */
+.nb-btn-orange {
+  background: var(--orange);
+  color: var(--white);
+}
+.nb-btn-black {
+  background: var(--black);
+  color: var(--white);
+} /* Works perfectly now */
+.nb-btn-white {
+  background: var(--white);
+  color: var(--black);
+}
+.nb-btn-ghost {
+  background: transparent;
+  color: var(--black);
+}
+
+/* ── Label / tag ── */
+.nb-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: var(--nb-border); /* Streamlined to use token */
+  box-shadow: 3px 3px 0 var(--ink); /* Streamlined to use token */
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  background: var(--yellow);
+  color: var(--black);
+  margin-bottom: 20px;
+}
+
+/* ── Input ── */
+.nb-input {
+  border: var(--nb-border);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--nb-radius);
+  background: var(--white);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition:
+    box-shadow 0.1s ease,
+    transform 0.1s ease;
+  width: 100%;
+  color: var(--black);
+}
+.nb-input:focus {
+  box-shadow: var(--shadow-md);
+  transform: translate(-1px, -1px);
+}
+
+/* ── Marquee (social proof strip) ── */
+.nb-marquee-track {
+  display: flex;
+  gap: 56px;
+  animation: marquee 24s linear infinite;
+  width: max-content;
+}
+
+/* ── Floating emoji deco ── */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ── Skeleton ── */
 .skeleton {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
-/* ── Bottom nav safe area ── */
-.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
-.mb-nav { margin-bottom: 72px; }
-@media (min-width: 768px) { .mb-nav { margin-bottom: 0; } }
-
-/* ── Focus rings ── */
-:focus-visible {
-  outline: 2px solid var(--smile-500);
-  outline-offset: 2px;
-  border-radius: 4px;
+/* ── Pulse animation (CTA) ── */
+.nb-pulse {
+  animation: nb-pulse 2s ease-in-out infinite;
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--smile-300); border-radius: 3px; }
-
-/* ── UI Enhancements ── */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px 0 rgba(255, 107, 53, 0.05);
+/* ── Safe areas ── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-
-.hover-glow-smile:hover {
-  box-shadow: 0 0 20px rgba(255, 217, 61, 0.6);
-  transform: translateY(-2px);
+.mb-nav {
+  margin-bottom: 72px;
 }
-
-.hover-glow-orange:hover {
-  box-shadow: 0 0 24px rgba(255, 107, 53, 0.5);
-  transform: translateY(-2px);
-}
-
-.hero-blob-1 {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255,217,61,0.2) 0%, rgba(255,217,61,0) 70%);
-  border-radius: 50%;
-  top: -10%;
-  left: -10%;
-  filter: blur(60px);
-  z-index: -1;
-  animation: floatSlow 8s ease-in-out infinite;
-}
-
-.hero-blob-2 {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, rgba(255,107,53,0) 70%);
-  border-radius: 50%;
-  bottom: -20%;
-  right: -5%;
-  filter: blur(60px);
-  z-index: -1;
-  animation: float 10s ease-in-out infinite reverse;
-}
-
-.glass-input {
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 2px solid rgba(252, 211, 77, 0.3);
-  outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-input:focus {
-  border-color: var(--glow-500);
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 16px rgba(255, 107, 53, 0.25);
-}
-
-.pulse-glow-yellow {
-  box-shadow: 0 0 15px rgba(255, 217, 61, 0.4);
-  animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+@media (min-width: 768px) {
+  .mb-nav {
+    margin-bottom: 0;
+  }
 }

@@ -240,19 +240,19 @@ export default function UploadPage() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-2xl font-black mb-6"
-        style={{ fontFamily: 'var(--font-nunito)', color: '#1F2937' }}
+        style={{ fontFamily: 'var(--font-nunito)', color: '#1A1040' }}
       >
         Share a Smile
       </motion.h1>
 
       {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-8 p-3 rounded-2xl glass-panel" style={{ background: 'rgba(255, 255, 255, 0.4)' }} role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={3}>
+      <div className="flex items-center gap-2 mb-8 p-3 rounded-lg nb-card" style={{ background: 'rgba(255, 255, 255, 0.4)' }} role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={3}>
         {STEPS.map((s, i) => (
           <div key={s.key} className="flex items-center gap-2 flex-1">
             <div
               className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-black flex-shrink-0 transition-all duration-300 shadow-sm"
               style={{
-                background: i <= stepIdx ? 'linear-gradient(135deg, #FFD93D, #FF6B35)' : 'rgba(255, 255, 255, 0.5)',
+                background: i <= stepIdx ? 'linear-gradient(135deg, #FFD93D, #FF6B35)' : 'white',
                 color: i <= stepIdx ? '#1F2937' : '#9CA3AF',
                 border: i <= stepIdx ? 'none' : '1px solid rgba(0, 0, 0, 0.05)'
               }}
@@ -278,7 +278,7 @@ export default function UploadPage() {
 
             {/* Mode tabs */}
             {!preview && (
-              <div className="flex gap-2 mb-4 p-1 rounded-2xl glass-panel" style={{ background: 'rgba(255, 255, 255, 0.3)' }}>
+              <div className="flex gap-2 mb-4 p-1 rounded-lg nb-card" style={{ background: 'white' }}>
                 {(['upload', 'camera'] as PickMode[]).map(mode => (
                   <button
                     key={mode}
@@ -311,7 +311,7 @@ export default function UploadPage() {
                   onClick={() => !preview && fileRef.current?.click()}
                   onDrop={onDrop}
                   onDragOver={e => e.preventDefault()}
-                  className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-300 glass-panel hover-glow-smile"
+                  className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all duration-300 nb-card "
                   style={{
                     minHeight: '280px',
                     borderColor: 'rgba(252, 211, 77, 0.6)',
@@ -324,13 +324,13 @@ export default function UploadPage() {
                   onKeyDown={e => !preview && e.key === 'Enter' && fileRef.current?.click()}
                 >
                   {preview ? (
-                    <img src={preview} alt="Selected photo preview" className="w-full object-cover rounded-3xl" style={{ maxHeight: '400px' }} />
+                    <img src={preview} alt="Selected photo preview" className="w-full object-cover rounded-xl" style={{ maxHeight: '400px' }} />
                   ) : (
                     <div className="flex flex-col items-center gap-3 py-12">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: '#FFD93D' }}>
-                        <Upload size={28} style={{ color: '#1F2937' }} aria-hidden="true" />
+                      <div className="flex h-16 w-16 items-center justify-center rounded-lg" style={{ background: '#FFD93D' }}>
+                        <Upload size={28} style={{ color: '#1A1040' }} aria-hidden="true" />
                       </div>
-                      <p className="font-semibold" style={{ color: '#1F2937' }}>Drop a photo or click to browse</p>
+                      <p className="font-semibold" style={{ color: '#1A1040' }}>Drop a photo or click to browse</p>
                       <p className="text-sm" style={{ color: '#9CA3AF' }}>JPG, PNG, WEBP · max 10MB</p>
                     </div>
                   )}
@@ -349,10 +349,10 @@ export default function UploadPage() {
 
             {/* ── Camera mode ── */}
             {pickMode === 'camera' && !preview && (
-              <div className="relative rounded-3xl overflow-hidden border-4 pulse-glow-yellow" style={{ minHeight: '300px', background: '#1F2937', borderColor: '#FFD93D' }}>
+              <div className="relative rounded-xl overflow-hidden border-4 nb-pulse" style={{ minHeight: '300px', background: '#1F2937', borderColor: '#FFD93D' }}>
                 <video
                   ref={videoRef}
-                  className="w-full rounded-3xl object-cover"
+                  className="w-full rounded-xl object-cover"
                   style={{
                     maxHeight: '420px',
                     transform: mirrored ? 'scaleX(-1)' : 'none',
@@ -385,8 +385,8 @@ export default function UploadPage() {
                     <Camera size={48} style={{ color: '#6B7280' }} aria-hidden="true" />
                     <button
                       onClick={startCamera}
-                      className="px-6 py-3 rounded-2xl font-bold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
-                      style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                      className="px-6 py-3 rounded-lg font-bold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
+                      style={{ background: '#FFD93D', color: '#1A1040', minHeight: '44px' }}
                     >
                       Enable Camera
                     </button>
@@ -401,7 +401,7 @@ export default function UploadPage() {
                     <button
                       onClick={startCamera}
                       className="px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer"
-                      style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                      style={{ background: '#FFD93D', color: '#1A1040', minHeight: '44px' }}
                     >
                       Try Again
                     </button>
@@ -428,7 +428,7 @@ export default function UploadPage() {
                       style={{ background: 'white', borderColor: '#FFD93D' }}
                       aria-label="Take photo (3 second countdown)"
                     >
-                      <div className="h-12 w-12 rounded-full" style={{ background: 'linear-gradient(135deg, #FFD93D, #FF6B35)' }} />
+                      <div className="h-12 w-12 rounded-full" style={{ background: '#FFD93D' }} />
                     </button>
 
                     {/* Stop camera */}
@@ -447,7 +447,7 @@ export default function UploadPage() {
 
             {/* Preview from camera */}
             {pickMode === 'camera' && preview && (
-              <img src={preview} alt="Captured photo preview" className="w-full rounded-3xl object-cover" style={{ maxHeight: '420px' }} />
+              <img src={preview} alt="Captured photo preview" className="w-full rounded-xl object-cover" style={{ maxHeight: '420px' }} />
             )}
 
             {error && <p className="mt-3 text-sm text-center" style={{ color: '#EF4444' }} role="alert">{error}</p>}
@@ -456,7 +456,7 @@ export default function UploadPage() {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={resetPick}
-                  className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg border-2 font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   style={{ borderColor: '#E5E7EB', color: '#6B7280', minHeight: '44px' }}
                 >
                   <RefreshCcw size={16} aria-hidden="true" />
@@ -465,8 +465,8 @@ export default function UploadPage() {
                 <button
                   onClick={runDetection}
                   disabled={detecting}
-                  className="flex-1 py-3 rounded-2xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
-                  style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                  className="flex-1 py-3 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
+                  style={{ background: '#FFD93D', color: '#1A1040', minHeight: '44px' }}
                 >
                   {detecting ? 'Detecting smile…' : 'Detect Smile →'}
                 </button>
@@ -479,15 +479,15 @@ export default function UploadPage() {
         {step === 'detect' && smileResult && (
           <motion.div key="detect" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             {preview && (
-              <img src={preview} alt="Your photo" className="w-full rounded-3xl mb-6 object-cover" style={{ maxHeight: '280px' }} />
+              <img src={preview} alt="Your photo" className="w-full rounded-xl mb-6 object-cover" style={{ maxHeight: '280px' }} />
             )}
-            <div className="rounded-3xl p-6 glass-panel hover-glow-orange" style={{ background: 'rgba(255, 255, 255, 0.6)' }}>
+            <div className="rounded-xl p-6 nb-card" style={{ background: 'rgba(255, 255, 255, 0.6)' }}>
               <SmileReveal score={smileResult.score} tier={smileResult.tier} points={smileResult.points} />
             </div>
             <div className="flex gap-3 mt-4">
               <button
                 onClick={resetPick}
-                className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
+                className="flex items-center gap-2 px-4 py-3 rounded-lg border-2 font-semibold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
                 style={{ borderColor: '#E5E7EB', color: '#6B7280', minHeight: '44px' }}
               >
                 <RefreshCcw size={16} aria-hidden="true" /> Try Again
@@ -495,8 +495,8 @@ export default function UploadPage() {
               <button
                 onClick={() => setStep('caption')}
                 disabled={captionLoading}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-wait cursor-pointer"
-                style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-wait cursor-pointer"
+                style={{ background: '#FFD93D', color: '#1A1040', minHeight: '44px' }}
               >
                 {captionLoading ? (
                   <>
@@ -513,10 +513,10 @@ export default function UploadPage() {
         {step === 'caption' && (
           <motion.div key="caption" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
             {preview && (
-              <img src={preview} alt="Your photo" className="w-full rounded-3xl object-cover" style={{ maxHeight: '280px' }} />
+              <img src={preview} alt="Your photo" className="w-full rounded-xl object-cover" style={{ maxHeight: '280px' }} />
             )}
             <div>
-              <label htmlFor="caption" className="block text-sm font-semibold mb-1.5" style={{ color: '#1F2937' }}>
+              <label htmlFor="caption" className="block text-sm font-semibold mb-1.5" style={{ color: '#1A1040' }}>
                 Caption <span className="font-normal" style={{ color: '#9CA3AF' }}>(AI-generated, editable)</span>
               </label>
               <textarea
@@ -525,7 +525,7 @@ export default function UploadPage() {
                 onChange={e => setCaption(e.target.value)}
                 rows={3}
                 maxLength={200}
-                className="w-full px-4 py-3 rounded-2xl text-sm resize-none outline-none glass-input"
+                className="w-full px-4 py-3 rounded-lg text-sm resize-none outline-none nb-input"
                 placeholder="Write a caption…"
               />
               <div className="text-right text-xs mt-1" style={{ color: '#9CA3AF' }}>{caption.length}/200</div>
@@ -534,8 +534,8 @@ export default function UploadPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-3.5 rounded-2xl font-bold text-base transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
-              style={{ background: 'linear-gradient(135deg, #FFD93D, #FF6B35)', color: '#1F2937', minHeight: '44px' }}
+              className="w-full py-3.5 rounded-lg font-bold text-base transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
+              style={{ background: '#FFD93D', color: '#1A1040', minHeight: '44px' }}
             >
               {submitting ? 'Posting…' : '🚀 Post to SmileChain'}
             </button>
