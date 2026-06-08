@@ -168,13 +168,19 @@ export default function UploadPage() {
       }
 
       setCaptionLoading(true);
-      const res = await fetch('/api/caption', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ score: result.score, tier: result.tier }),
-      });
-      const data = await res.json();
-      setCaption(data.caption ?? '');
+      try {
+        const res = await fetch('/api/caption', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ score: result.score, tier: result.tier }),
+        });
+        const data = await res.json();
+        if (data.error) console.error('[caption]', data.error);
+        setCaption(data.caption ?? '');
+      } catch (captionErr) {
+        console.error('[caption fetch]', captionErr);
+        setCaption('');
+      }
       setCaptionLoading(false);
       setStep('caption');
     } catch {

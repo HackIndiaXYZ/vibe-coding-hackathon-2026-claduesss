@@ -13,7 +13,7 @@ const TIER_PROMPTS: Record<SmileTier, string> = {
 export async function generateCaption(score: number, tier: SmileTier): Promise<string> {
   const description = TIER_PROMPTS[tier];
   const completion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o-mini',
     max_tokens: 60,
     messages: [
       {
