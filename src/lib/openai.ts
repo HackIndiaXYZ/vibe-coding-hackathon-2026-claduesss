@@ -1,35 +1,41 @@
-import OpenAI from 'openai';
 import type { SmileTier } from '@/types';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const CAPTIONS: Record<SmileTier, string[]> = {
+  beam: [
+    "That smile could light up the whole city ✨",
+    "Maximum smile energy unlocked 😁",
+    "This is what pure joy looks like 🌟",
+    "Beam smile achieved — 50 points well earned! 🔥",
+    "Warning: this smile is dangerously contagious 😁",
+    "Full power smile mode activated ⚡",
+  ],
+  big: [
+    "A big smile for a big day 😄",
+    "Radiating good vibes only 🌈",
+    "This smile hit different today 😄",
+    "Happiness level: very high 🎉",
+    "Smiling like nobody's watching 😄",
+    "Big smile, bigger heart 💛",
+  ],
+  mild: [
+    "A little smile goes a long way 😊",
+    "Quiet joy is still joy 💛",
+    "Soft smiles, good days 😊",
+    "The gentle kind of happy ✨",
+    "Small smile, full heart 😊",
+    "Keeping it warm and positive 🌻",
+  ],
+  none: [
+    "Even calm faces earn points here 😐",
+    "Resting face, still a vibe 💫",
+    "The quiet ones feel deeply 🌙",
+    "Not every day needs a big smile 😐",
+    "Chill mode: activated 🧊",
+    "Serenity is underrated ✨",
+  ],
+};
 
-export async function generateCaption(score: number, tier: SmileTier): Promise<string> {
-  const smilePercent = Math.round(score * 100);
-
-  const completion = await openai.chat.completions.create({
-    model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
-    max_tokens: 120,
-    response_format: { type: 'json_object' },
-    messages: [
-      {
-        role: 'system',
-        content: `You generate social media post descriptions for SmileChain, a platform where smile intensity is a currency.
-Respond only with valid JSON in this format:
-{ "caption": "<your caption here>" }
-Rules:
-- Max 20 words
-- Warm, fun, positive tone
-- Match the energy of the smile score
-- No hashtags`,
-      },
-      {
-        role: 'user',
-        content: `This person has a smile score of ${smilePercent}% (tier: ${tier}). Write a post description for their SmileChain post.`,
-      },
-    ],
-  });
-
-  const raw = completion.choices[0]?.message?.content ?? '{}';
-  const parsed = JSON.parse(raw) as { caption?: string };
-  return parsed.caption?.trim() ?? '';
+export async function generateCaption(_score: number, tier: SmileTier): Promise<string> {
+  const pool = CAPTIONS[tier];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
