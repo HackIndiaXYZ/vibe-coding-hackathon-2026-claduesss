@@ -40,8 +40,8 @@ graph TD
     end
 
     subgraph Server["⚡ API Routes"]
-        CAP[/api/caption - Caption Generator]:::server
-        AUTH[/api/auth/callback - OAuth Handler]:::server
+        CAP["/api/caption - Caption Generator"]:::server
+        AUTH["/api/auth/callback - OAuth Handler"]:::server
     end
 
     subgraph Supabase["🗄️ Supabase"]
