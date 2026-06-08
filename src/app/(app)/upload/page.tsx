@@ -43,7 +43,6 @@ export default function UploadPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const imgRef = useRef<HTMLImageElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const STEPS: { key: Step; label: string }[] = [
@@ -144,12 +143,22 @@ export default function UploadPage() {
   // ── Detection ───────────────────────────────────────────────
 
   async function runDetection() {
-    if (!imgRef.current) return;
+    if (!preview) return;
     setDetecting(true);
     setError('');
     try {
       await loadModels();
-      const result = await detectSmile(imgRef.current);
+
+      // Load image at full natural size — sr-only clips to 1×1px which breaks face-api
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Image failed to load'));
+        img.src = preview!;
+      });
+
+      const result = await detectSmile(img);
       setSmileResult(result);
       setStep('detect');
 
@@ -431,11 +440,6 @@ export default function UploadPage() {
             {/* Preview from camera */}
             {pickMode === 'camera' && preview && (
               <img src={preview} alt="Captured photo preview" className="w-full rounded-3xl object-cover" style={{ maxHeight: '420px' }} />
-            )}
-
-            {/* Hidden img for face-api */}
-            {preview && (
-              <img ref={imgRef} src={preview} alt="" aria-hidden="true" className="sr-only" crossOrigin="anonymous" />
             )}
 
             {error && <p className="mt-3 text-sm text-center" style={{ color: '#EF4444' }} role="alert">{error}</p>}
