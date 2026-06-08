@@ -1,31 +1,48 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, RefreshCcw, CheckCircle } from 'lucide-react';
+import { Upload, Camera, RefreshCcw, CheckCircle, FlipHorizontal, ZapOff } from 'lucide-react';
 import SmileReveal from '@/components/SmileReveal';
 import { loadModels, detectSmile } from '@/lib/face-api';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import type { SmileTier } from '@/types';
 
-type Step = 'pick' | 'detect' | 'caption' | 'submit';
+type Step = 'pick' | 'detect' | 'caption';
+type PickMode = 'upload' | 'camera';
 
 interface SmileResult { score: number; tier: SmileTier; points: number; emoji: string; label: string; color: string; }
 
 export default function UploadPage() {
   const router = useRouter();
   const { user } = useCurrentUser();
+
+  // Step state
   const [step, setStep] = useState<Step>('pick');
+  const [pickMode, setPickMode] = useState<PickMode>('upload');
+
+  // Photo state
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
+  // Camera state
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState('');
+  const [mirrored, setMirrored] = useState(true);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // Detection + submit state
   const [smileResult, setSmileResult] = useState<SmileResult | null>(null);
   const [caption, setCaption] = useState('');
   const [detecting, setDetecting] = useState(false);
   const [captionLoading, setCaptionLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
   const imgRef = useRef<HTMLImageElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -33,16 +50,89 @@ export default function UploadPage() {
     { key: 'pick',    label: 'Photo' },
     { key: 'detect',  label: 'Detect' },
     { key: 'caption', label: 'Caption' },
-    { key: 'submit',  label: 'Post' },
   ];
   const stepIdx = STEPS.findIndex(s => s.key === step);
+
+  // Stop camera when leaving pick step or component unmounts
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
+
+  useEffect(() => {
+    if (step !== 'pick' || pickMode !== 'camera') stopCamera();
+  }, [step, pickMode]);
+
+  // ── Camera helpers ──────────────────────────────────────────
+
+  async function startCamera() {
+    setCameraError('');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      setCameraActive(true);
+    } catch {
+      setCameraError('Camera access denied. Allow camera permission and try again.');
+    }
+  }
+
+  function stopCamera() {
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
+    setCameraActive(false);
+  }
+
+  function capturePhoto() {
+    if (!videoRef.current || !cameraActive) return;
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d')!;
+
+    if (mirrored) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0);
+
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const f = new File([blob], `selfie-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      setFile(f);
+      setPreview(canvas.toDataURL('image/jpeg'));
+      stopCamera();
+    }, 'image/jpeg', 0.92);
+  }
+
+  function startCountdown() {
+    let n = 3;
+    setCountdown(n);
+    const id = setInterval(() => {
+      n -= 1;
+      if (n === 0) {
+        clearInterval(id);
+        setCountdown(null);
+        capturePhoto();
+      } else {
+        setCountdown(n);
+      }
+    }, 1000);
+  }
+
+  // ── File upload helper ──────────────────────────────────────
 
   function handleFile(f: File) {
     if (!f.type.startsWith('image/')) { setError('Please select an image file.'); return; }
     setFile(f);
     setError('');
-    const url = URL.createObjectURL(f);
-    setPreview(url);
+    setPreview(URL.createObjectURL(f));
   }
 
   function onDrop(e: React.DragEvent) {
@@ -50,6 +140,8 @@ export default function UploadPage() {
     const f = e.dataTransfer.files[0];
     if (f) handleFile(f);
   }
+
+  // ── Detection ───────────────────────────────────────────────
 
   async function runDetection() {
     if (!imgRef.current) return;
@@ -63,7 +155,7 @@ export default function UploadPage() {
 
       if (result.tier === 'beam') {
         const confetti = (await import('canvas-confetti')).default;
-        confetti({ particleCount: 120, spread: 80, colors: ['#FFD93D', '#FF6B35', '#FF3D00'] });
+        confetti({ particleCount: 140, spread: 90, colors: ['#FFD93D', '#FF6B35', '#FF3D00'] });
       }
 
       setCaptionLoading(true);
@@ -78,10 +170,11 @@ export default function UploadPage() {
       setStep('caption');
     } catch {
       setError('Could not detect smile. Make sure your face is visible.');
-      setDetecting(false);
     }
     setDetecting(false);
   }
+
+  // ── Submit ──────────────────────────────────────────────────
 
   async function handleSubmit() {
     if (!file || !smileResult || !user) return;
@@ -117,6 +210,17 @@ export default function UploadPage() {
     router.push('/feed');
   }
 
+  function resetPick() {
+    setPreview(null);
+    setFile(null);
+    setSmileResult(null);
+    setError('');
+    setStep('pick');
+    if (pickMode === 'camera') startCamera();
+  }
+
+  // ── Render ──────────────────────────────────────────────────
+
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
       <motion.h1
@@ -125,19 +229,16 @@ export default function UploadPage() {
         className="text-2xl font-black mb-6"
         style={{ fontFamily: 'var(--font-nunito)', color: '#1F2937' }}
       >
-        Upload a Smile
+        Share a Smile
       </motion.h1>
 
       {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-8" role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={4}>
+      <div className="flex items-center gap-2 mb-8" role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={3}>
         {STEPS.map((s, i) => (
           <div key={s.key} className="flex items-center gap-2 flex-1">
             <div
               className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold flex-shrink-0 transition-all duration-300"
-              style={{
-                background: i <= stepIdx ? '#FFD93D' : '#F3F4F6',
-                color: i <= stepIdx ? '#1F2937' : '#9CA3AF',
-              }}
+              style={{ background: i <= stepIdx ? '#FFD93D' : '#F3F4F6', color: i <= stepIdx ? '#1F2937' : '#9CA3AF' }}
               aria-current={i === stepIdx ? 'step' : undefined}
             >
               {i < stepIdx ? <CheckCircle size={14} aria-hidden="true" /> : i + 1}
@@ -153,52 +254,188 @@ export default function UploadPage() {
       </div>
 
       <AnimatePresence mode="wait">
-        {/* Step 1: Pick photo */}
+
+        {/* ── Step 1: Pick ── */}
         {step === 'pick' && (
           <motion.div key="pick" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <div
-              onClick={() => fileRef.current?.click()}
-              onDrop={onDrop}
-              onDragOver={e => e.preventDefault()}
-              className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed cursor-pointer transition-all duration-200 hover:border-yellow-400"
-              style={{ minHeight: '280px', borderColor: '#FCD34D', background: '#FFFBEB' }}
-              role="button"
-              tabIndex={0}
-              aria-label="Click or drag to select an image"
-              onKeyDown={e => e.key === 'Enter' && fileRef.current?.click()}
-            >
-              {preview ? (
-                <img src={preview} alt="Selected photo preview" className="w-full h-full object-cover rounded-3xl" style={{ maxHeight: '400px' }} />
-              ) : (
-                <div className="flex flex-col items-center gap-3 py-12">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: '#FFD93D' }}>
-                    <Upload size={28} style={{ color: '#1F2937' }} aria-hidden="true" />
-                  </div>
-                  <p className="font-semibold" style={{ color: '#1F2937' }}>Drop a photo or click to browse</p>
-                  <p className="text-sm" style={{ color: '#9CA3AF' }}>JPG, PNG, WEBP · max 10MB</p>
+
+            {/* Mode tabs */}
+            {!preview && (
+              <div className="flex gap-2 mb-4 p-1 rounded-2xl" style={{ background: '#F3F4F6' }}>
+                {(['upload', 'camera'] as PickMode[]).map(mode => (
+                  <button
+                    key={mode}
+                    onClick={() => {
+                      setPickMode(mode);
+                      setError('');
+                      if (mode === 'camera') startCamera();
+                      else stopCamera();
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 cursor-pointer"
+                    style={{
+                      background: pickMode === mode ? 'white' : 'transparent',
+                      color: pickMode === mode ? '#1F2937' : '#9CA3AF',
+                      boxShadow: pickMode === mode ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                      minHeight: '44px',
+                    }}
+                    aria-pressed={pickMode === mode}
+                  >
+                    {mode === 'upload' ? <Upload size={16} aria-hidden="true" /> : <Camera size={16} aria-hidden="true" />}
+                    {mode === 'upload' ? 'Upload Photo' : 'Take Photo'}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* ── Upload mode ── */}
+            {pickMode === 'upload' && (
+              <>
+                <div
+                  onClick={() => !preview && fileRef.current?.click()}
+                  onDrop={onDrop}
+                  onDragOver={e => e.preventDefault()}
+                  className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-200"
+                  style={{
+                    minHeight: '280px',
+                    borderColor: '#FCD34D',
+                    background: '#FFFBEB',
+                    cursor: preview ? 'default' : 'pointer',
+                  }}
+                  role={preview ? undefined : 'button'}
+                  tabIndex={preview ? -1 : 0}
+                  aria-label={preview ? undefined : 'Click or drag to select an image'}
+                  onKeyDown={e => !preview && e.key === 'Enter' && fileRef.current?.click()}
+                >
+                  {preview ? (
+                    <img src={preview} alt="Selected photo preview" className="w-full object-cover rounded-3xl" style={{ maxHeight: '400px' }} />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 py-12">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: '#FFD93D' }}>
+                        <Upload size={28} style={{ color: '#1F2937' }} aria-hidden="true" />
+                      </div>
+                      <p className="font-semibold" style={{ color: '#1F2937' }}>Drop a photo or click to browse</p>
+                      <p className="text-sm" style={{ color: '#9CA3AF' }}>JPG, PNG, WEBP · max 10MB</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="sr-only"
-              onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
-              aria-label="Select image file"
-            />
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+                  aria-label="Select image file"
+                />
+              </>
+            )}
 
-            {/* hidden img for face-api */}
+            {/* ── Camera mode ── */}
+            {pickMode === 'camera' && !preview && (
+              <div className="relative rounded-3xl overflow-hidden" style={{ minHeight: '300px', background: '#1F2937' }}>
+                <video
+                  ref={videoRef}
+                  className="w-full rounded-3xl object-cover"
+                  style={{
+                    maxHeight: '420px',
+                    transform: mirrored ? 'scaleX(-1)' : 'none',
+                    display: cameraActive ? 'block' : 'none',
+                  }}
+                  playsInline
+                  muted
+                  aria-label="Camera preview"
+                />
+
+                {/* Countdown overlay */}
+                {countdown !== null && (
+                  <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                    <motion.span
+                      key={countdown}
+                      initial={{ scale: 1.6, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="text-8xl font-black"
+                      style={{ fontFamily: 'var(--font-nunito)', color: '#FFD93D' }}
+                      aria-live="assertive"
+                    >
+                      {countdown}
+                    </motion.span>
+                  </div>
+                )}
+
+                {/* Camera not started */}
+                {!cameraActive && !cameraError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                    <Camera size={48} style={{ color: '#6B7280' }} aria-hidden="true" />
+                    <button
+                      onClick={startCamera}
+                      className="px-6 py-3 rounded-2xl font-bold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
+                      style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                    >
+                      Enable Camera
+                    </button>
+                  </div>
+                )}
+
+                {/* Camera error */}
+                {cameraError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+                    <ZapOff size={36} style={{ color: '#EF4444' }} aria-hidden="true" />
+                    <p className="text-sm font-semibold" style={{ color: '#EF4444' }} role="alert">{cameraError}</p>
+                    <button
+                      onClick={startCamera}
+                      className="px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer"
+                      style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                )}
+
+                {/* Camera controls */}
+                {cameraActive && countdown === null && (
+                  <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-4 px-4">
+                    {/* Mirror toggle */}
+                    <button
+                      onClick={() => setMirrored(m => !m)}
+                      className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-200 hover:scale-110 cursor-pointer"
+                      style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}
+                      aria-label="Toggle mirror"
+                    >
+                      <FlipHorizontal size={20} aria-hidden="true" />
+                    </button>
+
+                    {/* Capture button */}
+                    <button
+                      onClick={startCountdown}
+                      className="flex h-16 w-16 items-center justify-center rounded-full border-4 transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                      style={{ background: 'white', borderColor: '#FFD93D' }}
+                      aria-label="Take photo (3 second countdown)"
+                    >
+                      <div className="h-12 w-12 rounded-full" style={{ background: 'linear-gradient(135deg, #FFD93D, #FF6B35)' }} />
+                    </button>
+
+                    {/* Stop camera */}
+                    <button
+                      onClick={stopCamera}
+                      className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-200 hover:scale-110 cursor-pointer"
+                      style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}
+                      aria-label="Stop camera"
+                    >
+                      <ZapOff size={20} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Preview from camera */}
+            {pickMode === 'camera' && preview && (
+              <img src={preview} alt="Captured photo preview" className="w-full rounded-3xl object-cover" style={{ maxHeight: '420px' }} />
+            )}
+
+            {/* Hidden img for face-api */}
             {preview && (
-              <img
-                ref={imgRef}
-                src={preview}
-                alt=""
-                aria-hidden="true"
-                className="sr-only"
-                crossOrigin="anonymous"
-              />
+              <img ref={imgRef} src={preview} alt="" aria-hidden="true" className="sr-only" crossOrigin="anonymous" />
             )}
 
             {error && <p className="mt-3 text-sm text-center" style={{ color: '#EF4444' }} role="alert">{error}</p>}
@@ -206,11 +443,12 @@ export default function UploadPage() {
             {preview && (
               <div className="flex gap-3 mt-4">
                 <button
-                  onClick={() => { setPreview(null); setFile(null); }}
-                  className="flex-1 py-3 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                  onClick={resetPick}
+                  className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
                   style={{ borderColor: '#E5E7EB', color: '#6B7280', minHeight: '44px' }}
                 >
-                  Change Photo
+                  <RefreshCcw size={16} aria-hidden="true" />
+                  {pickMode === 'camera' ? 'Retake' : 'Change'}
                 </button>
                 <button
                   onClick={runDetection}
@@ -218,25 +456,25 @@ export default function UploadPage() {
                   className="flex-1 py-3 rounded-2xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
                   style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
                 >
-                  {detecting ? 'Detecting…' : 'Detect Smile →'}
+                  {detecting ? 'Detecting smile…' : 'Detect Smile →'}
                 </button>
               </div>
             )}
           </motion.div>
         )}
 
-        {/* Step 2: Smile result */}
+        {/* ── Step 2: Smile result ── */}
         {step === 'detect' && smileResult && (
           <motion.div key="detect" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             {preview && (
-              <img src={preview} alt="Your uploaded photo" className="w-full rounded-3xl mb-6 object-cover" style={{ maxHeight: '280px' }} />
+              <img src={preview} alt="Your photo" className="w-full rounded-3xl mb-6 object-cover" style={{ maxHeight: '280px' }} />
             )}
             <div className="rounded-3xl p-6" style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
               <SmileReveal score={smileResult.score} tier={smileResult.tier} points={smileResult.points} />
             </div>
             <div className="flex gap-3 mt-4">
               <button
-                onClick={() => { setStep('pick'); setSmileResult(null); }}
+                onClick={resetPick}
                 className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm cursor-pointer transition-all duration-200 hover:scale-105"
                 style={{ borderColor: '#E5E7EB', color: '#6B7280', minHeight: '44px' }}
               >
@@ -254,11 +492,11 @@ export default function UploadPage() {
           </motion.div>
         )}
 
-        {/* Step 3: Caption */}
+        {/* ── Step 3: Caption + post ── */}
         {step === 'caption' && (
           <motion.div key="caption" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
             {preview && (
-              <img src={preview} alt="Your uploaded photo" className="w-full rounded-3xl object-cover" style={{ maxHeight: '280px' }} />
+              <img src={preview} alt="Your photo" className="w-full rounded-3xl object-cover" style={{ maxHeight: '280px' }} />
             )}
             <div>
               <label htmlFor="caption" className="block text-sm font-semibold mb-1.5" style={{ color: '#1F2937' }}>
@@ -271,7 +509,7 @@ export default function UploadPage() {
                 rows={3}
                 maxLength={200}
                 className="w-full px-4 py-3 rounded-2xl border-2 text-sm resize-none outline-none transition-all duration-200"
-                style={{ borderColor: '#FCD34D', background: 'white', color: '#1F2937', minHeight: '44px' }}
+                style={{ borderColor: '#FCD34D', background: 'white', color: '#1F2937' }}
                 placeholder="Write a caption…"
               />
               <div className="text-right text-xs mt-1" style={{ color: '#9CA3AF' }}>{caption.length}/200</div>
@@ -287,6 +525,7 @@ export default function UploadPage() {
             </button>
           </motion.div>
         )}
+
       </AnimatePresence>
     </div>
   );
