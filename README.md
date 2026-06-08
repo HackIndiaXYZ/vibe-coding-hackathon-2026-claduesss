@@ -26,23 +26,29 @@ Social media drives anxiety through likes and follower counts. SmileChain replac
 ## System Architecture
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'secondaryColor': '#FFF3CD', 'tertiaryColor': '#FFFBF0', 'clusterBkg': '#FFFBF0', 'clusterBorder': '#FFD93D'}}}%%
 graph TD
-    subgraph Client["Browser (Client)"]
-        UI[Next.js App Router]
-        FA[face-api.js\nSmile Detection]
-        FM[Framer Motion\nAnimations]
+    classDef client fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
+    classDef server fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
+    classDef db fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
+    classDef store fill:#374151,stroke:#6B7280,color:#ffffff
+
+    subgraph Client["🌐 Browser"]
+        UI[Next.js App Router]:::client
+        FA[face-api.js · Smile Detection]:::client
+        FM[Framer Motion · Animations]:::client
     end
 
-    subgraph Server["Server (Next.js API Routes)"]
-        CAP["/api/caption\nCaption Generator"]
-        AUTH["/api/auth/callback\nOAuth Handler"]
+    subgraph Server["⚡ API Routes"]
+        CAP[/api/caption · Caption Generator]:::server
+        AUTH[/api/auth/callback · OAuth Handler]:::server
     end
 
-    subgraph Supabase["Supabase (Backend)"]
-        DB[(Postgres DB)]
-        ST[(Storage\nPost Images)]
-        AU[Google OAuth]
-        RLS[Row Level Security]
+    subgraph Supabase["🗄️ Supabase"]
+        DB[(Postgres DB)]:::db
+        ST[(Storage · Images)]:::store
+        AU[Google OAuth]:::db
+        RLS[Row Level Security]:::store
     end
 
     UI -->|upload photo| FA
@@ -60,18 +66,28 @@ graph TD
 ## Upload Flow
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'edgeLabelBackground': '#FFFBF0'}}}%%
 flowchart LR
-    A([Pick Photo\nor Camera]) --> B[face-api.js\nDetects Smile]
-    B --> C{Score?}
-    C -->|0–40%| D[😐 None\n0 pts]
-    C -->|40–60%| E[😊 Mild\n10 pts]
-    C -->|60–80%| F[😄 Big\n30 pts]
-    C -->|80–100%| G[😁 Beam\n50 pts\n+ Confetti!]
-    D & E & F & G --> H[AI Caption\nGenerated]
-    H --> I[User Edits\nCaption]
-    I --> J[Upload to\nSupabase Storage]
-    J --> K[Insert Post\nRow in DB]
-    K --> L([Redirect\nto Feed])
+    classDef start fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
+    classDef process fill:#FFF3CD,stroke:#FFD93D,color:#1F2937
+    classDef decision fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
+    classDef tier0 fill:#F3F4F6,stroke:#9CA3AF,color:#374151
+    classDef tier1 fill:#FEF9C3,stroke:#EAB308,color:#713F12
+    classDef tier2 fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
+    classDef tier3 fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
+    classDef finish fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
+
+    A([📷 Pick Photo\nor Camera]):::start --> B[face-api.js\nDetects Smile]:::process
+    B --> C{Score?}:::decision
+    C -->|0–40%| D[😐 None · 0 pts]:::tier0
+    C -->|40–60%| E[😊 Mild · 10 pts]:::tier1
+    C -->|60–80%| F[😄 Big · 30 pts]:::tier2
+    C -->|80–100%| G[😁 Beam · 50 pts\n🎉 Confetti!]:::tier3
+    D & E & F & G --> H[AI Caption\nGenerated]:::process
+    H --> I[User Edits\nCaption]:::process
+    I --> J[Upload to\nSupabase Storage]:::process
+    J --> K[Insert Post\nRow in DB]:::process
+    K --> L([🚀 Redirect\nto Feed]):::finish
 ```
 
 ---
@@ -79,11 +95,12 @@ flowchart LR
 ## Auth Flow
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'actorBkg': '#FFD93D', 'actorBorder': '#FF6B35', 'actorTextColor': '#1F2937', 'actorLineColor': '#FF6B35', 'signalColor': '#FF6B35', 'signalTextColor': '#1F2937', 'labelBoxBkgColor': '#FFF3CD', 'labelBoxBorderColor': '#FFD93D', 'labelTextColor': '#1F2937', 'loopTextColor': '#1F2937', 'noteBkgColor': '#FFD93D', 'noteBorderColor': '#FF6B35', 'noteTextColor': '#1F2937', 'activationBkgColor': '#FFF3CD', 'activationBorderColor': '#FF6B35', 'sequenceNumberColor': '#ffffff'}}}%%
 sequenceDiagram
     actor User
-    participant App as Next.js App
-    participant Supabase
-    participant Google
+    participant App as ⚡ Next.js App
+    participant Supabase as 🗄️ Supabase
+    participant Google as 🔵 Google
 
     User->>App: Click "Sign in with Google"
     App->>Supabase: signInWithOAuth(google)
@@ -110,17 +127,25 @@ sequenceDiagram
 ## Follow System
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'edgeLabelBackground': '#FFFBF0'}}}%%
 flowchart TD
-    A([User clicks Follow]) --> B{Target account\nprivate?}
-    B -->|No — Public| C[INSERT follows\nstatus = accepted]
-    B -->|Yes — Private| D[INSERT follows\nstatus = pending]
-    D --> E[INSERT notification\ntype = follow_request]
-    E --> F[Target sees\nnotification]
-    F --> G{Decision?}
-    G -->|Accept| H[UPDATE follows\nstatus = accepted]
-    H --> I[INSERT notification\ntype = follow_accepted]
-    G -->|Decline| J[DELETE follows row]
-    C --> K([Follower sees\ntarget's posts])
+    classDef start fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
+    classDef decision fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
+    classDef action fill:#FFF3CD,stroke:#FFD93D,color:#1F2937
+    classDef accept fill:#D1FAE5,stroke:#10B981,color:#064E3B,font-weight:bold
+    classDef decline fill:#FEE2E2,stroke:#EF4444,color:#7F1D1D,font-weight:bold
+    classDef finish fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
+
+    A([👆 User clicks Follow]):::start --> B{Private\naccount?}:::decision
+    B -->|No — Public| C[INSERT follows\nstatus = accepted]:::action
+    B -->|Yes — Private| D[INSERT follows\nstatus = pending]:::action
+    D --> E[INSERT notification\ntype = follow_request]:::action
+    E --> F[Target sees\nnotification 🔔]:::action
+    F --> G{Decision?}:::decision
+    G -->|Accept ✅| H[UPDATE follows\nstatus = accepted]:::accept
+    H --> I[INSERT notification\ntype = follow_accepted]:::accept
+    G -->|Decline ❌| J[DELETE follows row]:::decline
+    C --> K([👀 Follower sees\ntarget's posts]):::finish
     I --> K
 ```
 
@@ -129,19 +154,20 @@ flowchart TD
 ## Gifting System
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'actorBkg': '#FFD93D', 'actorBorder': '#FF6B35', 'actorTextColor': '#1F2937', 'actorLineColor': '#FF6B35', 'signalColor': '#FF6B35', 'signalTextColor': '#1F2937', 'labelBoxBkgColor': '#FFF3CD', 'labelBoxBorderColor': '#FFD93D', 'labelTextColor': '#1F2937', 'noteBkgColor': '#FFD93D', 'noteBorderColor': '#FF6B35', 'noteTextColor': '#1F2937', 'activationBkgColor': '#FFF3CD', 'activationBorderColor': '#FF6B35'}}}%%
 sequenceDiagram
-    actor Giver
-    participant App as SmileChain
-    participant DB as Supabase DB
+    actor Giver as 😊 Giver
+    participant App as ⚡ SmileChain
+    participant DB as 🗄️ Supabase DB
 
     Giver->>App: Click "Gift Smile" on post
     App->>App: Check — not own post,\nnot already gifted,\nhas ≥1 point
     App->>DB: INSERT smile_gifts row
     DB->>DB: Trigger: UPDATE posts\nSET gift_count + 1
-    DB->>DB: Trigger: UPDATE users\ngiver points - 1
+    DB->>DB: Trigger: UPDATE users\ngiver points − 1
     DB->>DB: Trigger: UPDATE users\nreceiver points + 1
     DB->>DB: INSERT notification\ntype = gift_received
-    App->>Giver: Show floating +1 animation
+    App->>Giver: Show floating +1 animation 🎁
 ```
 
 ---
@@ -149,6 +175,7 @@ sequenceDiagram
 ## Database Schema
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'tertiaryColor': '#FFF3CD', 'edgeLabelBackground': '#FFFBF0', 'attributeBackgroundColorEven': '#FFFBF0', 'attributeBackgroundColorOdd': '#FFF3CD'}}}%%
 erDiagram
     users {
         uuid id PK
