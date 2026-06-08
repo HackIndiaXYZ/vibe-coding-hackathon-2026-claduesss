@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Camera, RefreshCcw, CheckCircle, FlipHorizontal, ZapOff } from 'lucide-react';
+import { Upload, Camera, RefreshCcw, CheckCircle, FlipHorizontal, ZapOff, Loader2 } from 'lucide-react';
 import SmileReveal from '@/components/SmileReveal';
 import { loadModels, detectSmile } from '@/lib/face-api';
 import { createClient } from '@/lib/supabase/client';
@@ -496,9 +496,7 @@ export default function UploadPage() {
               >
                 {captionLoading ? (
                   <>
-                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                    </svg>
+                    <Loader2 size={16} className="animate-spin" aria-hidden="true" />
                     Writing caption…
                   </>
                 ) : 'Next →'}
