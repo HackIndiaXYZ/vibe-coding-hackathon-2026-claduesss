@@ -167,22 +167,20 @@ export default function UploadPage() {
         confetti({ particleCount: 140, spread: 90, colors: ['#FFD93D', '#FF6B35', '#FF3D00'] });
       }
 
+      // Pre-fetch caption in background — user stays on detect step
       setCaptionLoading(true);
-      try {
-        const res = await fetch('/api/caption', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ score: result.score, tier: result.tier }),
-        });
-        const data = await res.json();
-        if (data.error) console.error('[caption]', data.error);
-        setCaption(data.caption ?? '');
-      } catch (captionErr) {
-        console.error('[caption fetch]', captionErr);
-        setCaption('');
-      }
-      setCaptionLoading(false);
-      setStep('caption');
+      fetch('/api/caption', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: result.score, tier: result.tier }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) console.error('[caption]', data.error);
+          setCaption(data.caption ?? '');
+        })
+        .catch(err => console.error('[caption fetch]', err))
+        .finally(() => setCaptionLoading(false));
     } catch {
       setError('Could not detect smile. Make sure your face is visible.');
     }
@@ -493,10 +491,17 @@ export default function UploadPage() {
               <button
                 onClick={() => setStep('caption')}
                 disabled={captionLoading}
-                className="flex-1 py-3 rounded-2xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-wait cursor-pointer"
                 style={{ background: '#FFD93D', color: '#1F2937', minHeight: '44px' }}
               >
-                {captionLoading ? 'Generating caption…' : 'Next →'}
+                {captionLoading ? (
+                  <>
+                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                    </svg>
+                    Writing caption…
+                  </>
+                ) : 'Next →'}
               </button>
             </div>
           </motion.div>
