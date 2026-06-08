@@ -35,18 +35,18 @@ graph TD
 
     subgraph Client["🌐 Browser"]
         UI[Next.js App Router]:::client
-        FA[face-api.js · Smile Detection]:::client
-        FM[Framer Motion · Animations]:::client
+        FA[face-api.js - Smile Detection]:::client
+        FM[Framer Motion - Animations]:::client
     end
 
     subgraph Server["⚡ API Routes"]
-        CAP[/api/caption · Caption Generator]:::server
-        AUTH[/api/auth/callback · OAuth Handler]:::server
+        CAP[/api/caption - Caption Generator]:::server
+        AUTH[/api/auth/callback - OAuth Handler]:::server
     end
 
     subgraph Supabase["🗄️ Supabase"]
         DB[(Postgres DB)]:::db
-        ST[(Storage · Images)]:::store
+        ST[(Storage - Images)]:::store
         AU[Google OAuth]:::db
         RLS[Row Level Security]:::store
     end
@@ -79,10 +79,10 @@ flowchart LR
 
     A([📷 Pick Photo\nor Camera]):::start --> B[face-api.js\nDetects Smile]:::process
     B --> C{Score?}:::decision
-    C -->|0–40%| D[😐 None · 0 pts]:::tier0
-    C -->|40–60%| E[😊 Mild · 10 pts]:::tier1
-    C -->|60–80%| F[😄 Big · 30 pts]:::tier2
-    C -->|80–100%| G[😁 Beam · 50 pts\n🎉 Confetti!]:::tier3
+    C -->|0–40%| D[😐 None - 0 pts]:::tier0
+    C -->|40–60%| E[😊 Mild - 10 pts]:::tier1
+    C -->|60–80%| F[😄 Big - 30 pts]:::tier2
+    C -->|80–100%| G[😁 Beam - 50 pts\n🎉 Confetti!]:::tier3
     D & E & F & G --> H[AI Caption\nGenerated]:::process
     H --> I[User Edits\nCaption]:::process
     I --> J[Upload to\nSupabase Storage]:::process
