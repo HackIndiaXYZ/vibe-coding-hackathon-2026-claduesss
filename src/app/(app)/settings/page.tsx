@@ -98,8 +98,8 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSave}
-        className="space-y-5 p-6 rounded-3xl mb-4"
-        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}
+        className="space-y-5 p-6 rounded-3xl mb-4 glass-panel hover-glow-smile"
+        style={{ background: 'rgba(255, 255, 255, 0.6)' }}
       >
         <h2 className="font-bold text-lg" style={{ color: '#1F2937' }}>Profile</h2>
 
@@ -114,8 +114,7 @@ export default function SettingsPage() {
             onChange={e => setDisplayName(e.target.value)}
             maxLength={50}
             placeholder="Your name"
-            className="w-full px-4 py-3 rounded-2xl border-2 text-base outline-none transition-all duration-200"
-            style={{ borderColor: '#FCD34D', background: '#FFFBF0', color: '#1F2937', minHeight: '44px' }}
+            className="w-full px-4 py-3 rounded-2xl text-base glass-input"
           />
         </div>
 
@@ -131,8 +130,8 @@ export default function SettingsPage() {
               value={username}
               onChange={e => { setUsername(e.target.value); setUsernameError(''); }}
               maxLength={20}
-              className="w-full pl-8 pr-4 py-3 rounded-2xl border-2 text-base outline-none transition-all duration-200"
-              style={{ borderColor: usernameError ? '#EF4444' : '#FCD34D', background: '#FFFBF0', color: '#1F2937', minHeight: '44px' }}
+              className="w-full pl-8 pr-4 py-3 rounded-2xl text-base glass-input"
+              style={{ borderColor: usernameError ? '#EF4444' : undefined }}
             />
           </div>
           {usernameError && <p className="mt-1.5 text-sm" style={{ color: '#EF4444' }} role="alert">{usernameError}</p>}
@@ -149,11 +148,12 @@ export default function SettingsPage() {
                 key={opt.label}
                 type="button"
                 onClick={() => setIsPrivate(opt.value)}
-                className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer"
                 style={{
-                  borderColor: isPrivate === opt.value ? '#FFD93D' : '#E5E7EB',
-                  background: isPrivate === opt.value ? '#FFFBEB' : 'white',
-                  color: '#1F2937',
+                  border: isPrivate === opt.value ? '2px solid #FFD93D' : '2px solid rgba(0,0,0,0.05)',
+                  background: isPrivate === opt.value ? 'linear-gradient(135deg, #FFD93D, #FF6B35)' : 'rgba(255, 255, 255, 0.4)',
+                  color: isPrivate === opt.value ? '#1F2937' : '#6B7280',
+                  boxShadow: isPrivate === opt.value ? '0 4px 12px rgba(255, 107, 53, 0.15)' : 'none',
                   minHeight: '44px',
                 }}
                 aria-pressed={isPrivate === opt.value}
@@ -187,8 +187,8 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="p-6 rounded-3xl mb-4"
-        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}
+        className="p-6 rounded-3xl mb-4 glass-panel"
+        style={{ background: 'rgba(255, 255, 255, 0.6)' }}
       >
         <button
           onClick={handleSignOut}
@@ -205,8 +205,8 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="p-6 rounded-3xl border-2"
-        style={{ background: 'white', borderColor: '#FEE2E2', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}
+        className="p-6 rounded-3xl border-2 glass-panel"
+        style={{ background: 'rgba(254, 226, 226, 0.4)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
       >
         <h2 className="font-bold mb-1" style={{ color: '#DC2626' }}>Danger Zone</h2>
         <p className="text-sm mb-4" style={{ color: '#6B7280' }}>Permanently delete your account and all your data.</p>
@@ -229,8 +229,8 @@ export default function SettingsPage() {
               value={deleteInput}
               onChange={e => setDeleteInput(e.target.value)}
               placeholder={user?.username ?? ''}
-              className="w-full px-4 py-3 rounded-2xl border-2 text-sm outline-none"
-              style={{ borderColor: '#FCA5A5', background: '#FFF', color: '#1F2937', minHeight: '44px' }}
+              className="w-full px-4 py-3 rounded-2xl text-sm glass-input"
+              style={{ borderColor: 'rgba(239, 68, 68, 0.3)' }}
               aria-label="Confirm username to delete account"
             />
             <div className="flex gap-3">

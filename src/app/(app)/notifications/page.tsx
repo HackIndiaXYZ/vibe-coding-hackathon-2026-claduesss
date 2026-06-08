@@ -135,11 +135,13 @@ export default function NotificationsPage() {
             <motion.li
               key={n.id}
               variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
-              className="flex items-start gap-3 p-4 rounded-2xl transition-all duration-200"
+              className="flex items-start gap-3 p-4 rounded-2xl transition-all duration-200 glass-panel hover-glow-smile border-2"
               style={{
-                background: n.is_read ? 'white' : '#FFFBEB',
-                boxShadow: '0 2px 12px rgba(0,0,0,0.05)',
-                borderLeft: n.is_read ? 'none' : '3px solid #FFD93D',
+                background: n.is_read ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 243, 199, 0.4)',
+                borderColor: n.is_read ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 217, 61, 0.3)',
+                borderLeftWidth: n.is_read ? '2px' : '4px',
+                borderLeftColor: n.is_read ? 'rgba(255, 255, 255, 0.2)' : '#FFD93D',
+                boxShadow: n.is_read ? 'none' : '0 4px 16px rgba(255, 217, 61, 0.1)'
               }}
             >
               <Link

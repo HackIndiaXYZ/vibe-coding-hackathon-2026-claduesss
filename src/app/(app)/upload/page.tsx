@@ -246,21 +246,25 @@ export default function UploadPage() {
       </motion.h1>
 
       {/* Step indicator */}
-      <div className="flex items-center gap-2 mb-8" role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={3}>
+      <div className="flex items-center gap-2 mb-8 p-3 rounded-2xl glass-panel" style={{ background: 'rgba(255, 255, 255, 0.4)' }} role="progressbar" aria-label="Upload steps" aria-valuenow={stepIdx + 1} aria-valuemax={3}>
         {STEPS.map((s, i) => (
           <div key={s.key} className="flex items-center gap-2 flex-1">
             <div
-              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold flex-shrink-0 transition-all duration-300"
-              style={{ background: i <= stepIdx ? '#FFD93D' : '#F3F4F6', color: i <= stepIdx ? '#1F2937' : '#9CA3AF' }}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-black flex-shrink-0 transition-all duration-300 shadow-sm"
+              style={{
+                background: i <= stepIdx ? 'linear-gradient(135deg, #FFD93D, #FF6B35)' : 'rgba(255, 255, 255, 0.5)',
+                color: i <= stepIdx ? '#1F2937' : '#9CA3AF',
+                border: i <= stepIdx ? 'none' : '1px solid rgba(0, 0, 0, 0.05)'
+              }}
               aria-current={i === stepIdx ? 'step' : undefined}
             >
               {i < stepIdx ? <CheckCircle size={14} aria-hidden="true" /> : i + 1}
             </div>
-            <span className="text-xs font-medium hidden sm:block" style={{ color: i <= stepIdx ? '#1F2937' : '#9CA3AF' }}>
+            <span className="text-xs font-black hidden sm:block" style={{ color: i <= stepIdx ? '#1F2937' : '#9CA3AF' }}>
               {s.label}
             </span>
             {i < STEPS.length - 1 && (
-              <div className="flex-1 h-0.5 rounded" style={{ background: i < stepIdx ? '#FFD93D' : '#F3F4F6' }} />
+              <div className="flex-1 h-0.5 rounded" style={{ background: i < stepIdx ? 'linear-gradient(90deg, #FFD93D, #FF6B35)' : 'rgba(0, 0, 0, 0.05)' }} />
             )}
           </div>
         ))}
@@ -274,7 +278,7 @@ export default function UploadPage() {
 
             {/* Mode tabs */}
             {!preview && (
-              <div className="flex gap-2 mb-4 p-1 rounded-2xl" style={{ background: '#F3F4F6' }}>
+              <div className="flex gap-2 mb-4 p-1 rounded-2xl glass-panel" style={{ background: 'rgba(255, 255, 255, 0.3)' }}>
                 {(['upload', 'camera'] as PickMode[]).map(mode => (
                   <button
                     key={mode}
@@ -284,11 +288,11 @@ export default function UploadPage() {
                       if (mode === 'camera') startCamera();
                       else stopCamera();
                     }}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 cursor-pointer"
                     style={{
-                      background: pickMode === mode ? 'white' : 'transparent',
+                      background: pickMode === mode ? 'linear-gradient(135deg, #FFD93D, #FF6B35)' : 'transparent',
                       color: pickMode === mode ? '#1F2937' : '#9CA3AF',
-                      boxShadow: pickMode === mode ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                      boxShadow: pickMode === mode ? '0 4px 12px rgba(255, 107, 53, 0.15)' : 'none',
                       minHeight: '44px',
                     }}
                     aria-pressed={pickMode === mode}
@@ -307,11 +311,11 @@ export default function UploadPage() {
                   onClick={() => !preview && fileRef.current?.click()}
                   onDrop={onDrop}
                   onDragOver={e => e.preventDefault()}
-                  className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-200"
+                  className="relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-300 glass-panel hover-glow-smile"
                   style={{
                     minHeight: '280px',
-                    borderColor: '#FCD34D',
-                    background: '#FFFBEB',
+                    borderColor: 'rgba(252, 211, 77, 0.6)',
+                    background: 'rgba(255, 251, 235, 0.3)',
                     cursor: preview ? 'default' : 'pointer',
                   }}
                   role={preview ? undefined : 'button'}
@@ -345,7 +349,7 @@ export default function UploadPage() {
 
             {/* ── Camera mode ── */}
             {pickMode === 'camera' && !preview && (
-              <div className="relative rounded-3xl overflow-hidden" style={{ minHeight: '300px', background: '#1F2937' }}>
+              <div className="relative rounded-3xl overflow-hidden border-4 pulse-glow-yellow" style={{ minHeight: '300px', background: '#1F2937', borderColor: '#FFD93D' }}>
                 <video
                   ref={videoRef}
                   className="w-full rounded-3xl object-cover"
@@ -477,7 +481,7 @@ export default function UploadPage() {
             {preview && (
               <img src={preview} alt="Your photo" className="w-full rounded-3xl mb-6 object-cover" style={{ maxHeight: '280px' }} />
             )}
-            <div className="rounded-3xl p-6" style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+            <div className="rounded-3xl p-6 glass-panel hover-glow-orange" style={{ background: 'rgba(255, 255, 255, 0.6)' }}>
               <SmileReveal score={smileResult.score} tier={smileResult.tier} points={smileResult.points} />
             </div>
             <div className="flex gap-3 mt-4">
@@ -521,8 +525,7 @@ export default function UploadPage() {
                 onChange={e => setCaption(e.target.value)}
                 rows={3}
                 maxLength={200}
-                className="w-full px-4 py-3 rounded-2xl border-2 text-sm resize-none outline-none transition-all duration-200"
-                style={{ borderColor: '#FCD34D', background: 'white', color: '#1F2937' }}
+                className="w-full px-4 py-3 rounded-2xl text-sm resize-none outline-none glass-input"
                 placeholder="Write a caption…"
               />
               <div className="text-right text-xs mt-1" style={{ color: '#9CA3AF' }}>{caption.length}/200</div>

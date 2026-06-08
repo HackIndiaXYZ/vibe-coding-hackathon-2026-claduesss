@@ -63,8 +63,8 @@ export default function PostCard({ post, currentUserId, currentUserPoints = 0, h
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="rounded-3xl overflow-hidden"
-      style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}
+      className="rounded-3xl overflow-hidden glass-panel hover-glow-smile"
+      style={{ background: 'rgba(255, 255, 255, 0.7)' }}
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">

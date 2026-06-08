@@ -67,12 +67,16 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6" style={{ background: 'var(--background)' }}>
+    <main className="relative flex min-h-screen items-center justify-center px-6 overflow-hidden" style={{ background: 'var(--background)' }}>
+      {/* Animated Background Blobs */}
+      <div className="hero-blob-1" aria-hidden="true"></div>
+      <div className="hero-blob-2" aria-hidden="true"></div>
+
       <motion.div
         initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full max-w-sm"
+        className="relative z-10 w-full max-w-sm p-8 rounded-3xl glass-panel hover-glow-smile"
       >
         <div className="text-center mb-8">
           <span className="text-5xl" role="img" aria-label="wave">👋</span>

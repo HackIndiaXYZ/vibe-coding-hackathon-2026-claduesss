@@ -1,0 +1,17 @@
+{
+  "name": "SmileChain",
+  "short_name": "SmileChain",
+  "description": "Where your smile is the currency",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFBF0",
+  "theme_color": "#FFD93D",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -57,8 +57,7 @@ export default function SearchPage() {
           onChange={e => setQuery(e.target.value)}
           placeholder="Search by username…"
           autoFocus
-          className="w-full pl-11 pr-4 py-3.5 rounded-2xl border-2 text-base outline-none transition-all duration-200"
-          style={{ borderColor: '#FCD34D', background: 'white', color: '#1F2937', minHeight: '44px' }}
+          className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-base glass-input"
           aria-label="Search users by username"
         />
         {loading && (
@@ -104,8 +103,8 @@ export default function SearchPage() {
             >
               <Link
                 href={`/profile/${u.username}`}
-                className="flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 hover:scale-[1.01] cursor-pointer"
-                style={{ background: 'white', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}
+                className="flex items-center gap-3 p-3 rounded-2xl transition-all duration-200 hover:scale-[1.01] cursor-pointer glass-panel hover-glow-orange border-2"
+                style={{ background: 'rgba(255, 255, 255, 0.6)', borderColor: 'rgba(252, 211, 77, 0.1)' }}
               >
                 <div
                   className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full overflow-hidden border-2"

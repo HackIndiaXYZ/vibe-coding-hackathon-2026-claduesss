@@ -12,7 +12,8 @@ export default function PrivateLock({ username }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center justify-center py-16 text-center"
+      className="flex flex-col items-center justify-center py-16 text-center glass-panel rounded-3xl p-8 hover-glow-orange border-2"
+      style={{ background: 'rgba(255, 255, 255, 0.4)', borderColor: 'rgba(252, 211, 77, 0.2)' }}
     >
       <div
         className="flex h-16 w-16 items-center justify-center rounded-2xl mb-4"

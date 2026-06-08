@@ -100,7 +100,7 @@ export default function ProfilePage() {
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-start gap-4 mb-4">
           <div
-            className="h-20 w-20 flex-shrink-0 rounded-full overflow-hidden border-4"
+            className="h-20 w-20 flex-shrink-0 rounded-full overflow-hidden border-4 pulse-glow-yellow"
             style={{ borderColor: '#FFD93D' }}
           >
             {profile.avatar_url ? (
@@ -142,7 +142,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-4 py-4 rounded-2xl text-center" style={{ background: '#FFFBEB' }}>
+        <div className="grid grid-cols-3 gap-4 py-4 rounded-2xl text-center glass-panel hover-glow-smile" style={{ background: 'rgba(255, 251, 235, 0.4)' }}>
           {[
             { label: 'Posts', value: posts.length },
             { label: 'Followers', value: followCounts.followers },
@@ -200,20 +200,22 @@ export default function ProfilePage() {
               <motion.div
                 key={post.id}
                 variants={{ hidden: { opacity: 0, scale: 0.9 }, show: { opacity: 1, scale: 1 } }}
-                className="relative aspect-square overflow-hidden rounded-xl cursor-pointer group"
+                className="relative aspect-square overflow-hidden rounded-2xl cursor-pointer group glass-panel hover-glow-orange border-2"
+                style={{ borderColor: 'rgba(252, 211, 77, 0.2)' }}
               >
                 <img
                   src={post.image_url}
                   alt={post.caption ?? 'Smile post'}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
                 <div
-                  className="absolute inset-0 flex items-end p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}
+                  className="absolute inset-0 flex items-end p-2 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-t from-orange-500/80 to-transparent"
                   aria-hidden="true"
                 >
-                  <span className="text-white text-xs font-bold">{tier.emoji} +{tier.points}pts</span>
+                  <span className="text-white text-xs font-black drop-shadow-sm flex items-center gap-1">
+                    <span>{tier.emoji}</span> +{tier.points} pts
+                  </span>
                 </div>
               </motion.div>
             );

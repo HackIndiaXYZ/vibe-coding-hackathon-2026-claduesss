@@ -9,7 +9,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 function SkeletonCard() {
   return (
-    <div className="rounded-3xl overflow-hidden" style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
+    <div className="rounded-3xl overflow-hidden glass-panel" style={{ background: 'rgba(255, 255, 255, 0.4)' }}>
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
         <div className="skeleton h-10 w-10 rounded-full" />
         <div className="flex-1 space-y-2">
@@ -17,7 +17,7 @@ function SkeletonCard() {
           <div className="skeleton h-2.5 w-16 rounded" />
         </div>
       </div>
-      <div className="skeleton aspect-square w-full" />
+      <div className="skeleton aspect-square w-full opacity-60" />
       <div className="px-4 py-3 space-y-2">
         <div className="skeleton h-3 w-3/4 rounded" />
         <div className="skeleton h-3 w-1/2 rounded" />

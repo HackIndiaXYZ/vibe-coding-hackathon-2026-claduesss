@@ -27,8 +27,10 @@ const FEATURES = [
   { icon: <Smile size={22} />, title: 'AI Captions',          desc: 'GPT-3.5 writes the perfect caption based on your smile tier — automatically.' },
 ];
 
-const fadeUp = { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } } };
-const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.12 } } };
+import type { Variants } from 'framer-motion';
+
+const fadeUp: Variants = { hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } } };
+const stagger: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.12 } } };
 
 export default function Home() {
   return (
@@ -56,6 +58,9 @@ export default function Home() {
 
       {/* ── Hero ── */}
       <section className="relative flex flex-col items-center justify-center text-center px-6 pt-20 pb-32 overflow-hidden">
+        {/* Animated Background Blobs */}
+        <div className="hero-blob-1" aria-hidden="true"></div>
+        <div className="hero-blob-2" aria-hidden="true"></div>
         {/* floating decorations */}
         {['😄', '😁', '😊', '✨', '🌟', '💛'].map((e, i) => (
           <span
@@ -115,7 +120,7 @@ export default function Home() {
         >
           <Link
             href="/login"
-            className="px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg cursor-pointer"
+            className="px-8 py-4 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg cursor-pointer hover-glow-smile"
             style={{ background: 'linear-gradient(135deg, #FFD93D, #FF6B35)', color: '#1F2937', minHeight: '44px' }}
           >
             Start Smiling — It&apos;s Free
@@ -170,8 +175,7 @@ export default function Home() {
               <motion.div
                 key={step.title}
                 variants={fadeUp}
-                className="relative flex flex-col items-center text-center p-6 rounded-2xl card-hover step-line"
-                style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
+                className="relative flex flex-col items-center text-center p-6 rounded-2xl card-hover step-line glass-panel hover-glow-orange"
               >
                 <div
                   className="flex h-14 w-14 items-center justify-center rounded-2xl mb-4 font-black text-xl"
@@ -220,8 +224,8 @@ export default function Home() {
               <motion.div
                 key={tier.label}
                 variants={fadeUp}
-                className="flex flex-col items-center text-center p-6 rounded-2xl card-hover"
-                style={{ background: tier.bg, border: `2px solid ${tier.color}33` }}
+                className="flex flex-col items-center text-center p-6 rounded-2xl card-hover hover-glow-smile"
+                style={{ background: `linear-gradient(145deg, ${tier.bg}, #ffffff)`, border: `2px solid ${tier.color}44`, boxShadow: `0 8px 24px ${tier.color}15` }}
               >
                 <span className="text-5xl mb-3" role="img" aria-label={tier.label}>{tier.emoji}</span>
                 <div className="font-bold text-base mb-1" style={{ color: '#1F2937' }}>{tier.label}</div>
@@ -260,8 +264,7 @@ export default function Home() {
               <motion.div
                 key={f.title}
                 variants={fadeUp}
-                className="p-6 rounded-2xl card-hover"
-                style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
+                className="p-6 rounded-2xl card-hover glass-panel hover-glow-orange"
               >
                 <div
                   className="flex h-11 w-11 items-center justify-center rounded-xl mb-4"

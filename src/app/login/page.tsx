@@ -17,15 +17,18 @@ export default function LoginPage() {
 
   return (
     <main
-      className="flex min-h-screen items-center justify-center px-6"
+      className="relative flex min-h-screen items-center justify-center px-6 overflow-hidden"
       style={{ background: 'var(--background)' }}
     >
+      {/* Animated Background Blobs */}
+      <div className="hero-blob-1" aria-hidden="true"></div>
+      <div className="hero-blob-2" aria-hidden="true"></div>
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.175, 0.885, 0.32, 1.275] }}
-        className="w-full max-w-sm p-8 rounded-3xl shadow-xl text-center"
-        style={{ background: 'white', border: '2px solid #FCD34D' }}
+        className="relative z-10 w-full max-w-sm p-8 rounded-3xl text-center glass-panel hover-glow-orange"
       >
         <div
           className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl shadow-md"
