@@ -2,6 +2,8 @@
 
 > A social platform where your genuine smile is the only currency.
 
+### 🌐 [smilechain.ashwinsi.in](https://smilechain.ashwinsi.in)
+
 SmileChain is an Instagram-like app where smile intensity = points. Post a photo, let AI detect your smile, earn Smile Points, and gift them to others. Built for **HackIndia Vibe Coding Hackathon 2026**.
 
 ---
