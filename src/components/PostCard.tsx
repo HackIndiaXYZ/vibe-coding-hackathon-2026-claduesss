@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { Gift, User } from 'lucide-react';
+import { Gift, Heart, MessageCircle, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { TIER_CONFIG, GIFT_COST } from '@/lib/smile-points';
+import { useLike } from '@/hooks/useLike';
+import CommentSection from '@/components/CommentSection';
 import type { Post } from '@/types';
 
 const INK = '#1A1040';
@@ -28,10 +30,19 @@ interface Props {
 }
 
 export default function PostCard({ post, currentUserId, currentUserPoints = 0, hasGifted = false, onGift }: Props) {
-  const [gifted,      setGifted]      = useState(hasGifted);
-  const [giftCount,   setGiftCount]   = useState(post.gift_count);
-  const [showFloat,   setShowFloat]   = useState(false);
-  const [giftLoading, setGiftLoading] = useState(false);
+  const [gifted,        setGifted]        = useState(hasGifted);
+  const [giftCount,     setGiftCount]     = useState(post.gift_count);
+  const [showGiftFloat, setShowGiftFloat] = useState(false);
+  const [giftLoading,   setGiftLoading]   = useState(false);
+  const [showComments,  setShowComments]  = useState(false);
+
+  const { liked, likeCount, toggle: toggleLike } = useLike(
+    post.id,
+    post.user_id,
+    post.has_liked ?? false,
+    post.like_count ?? 0,
+    currentUserId,
+  );
 
   const tier   = TIER_CONFIG[post.smile_tier];
   const author = post.user as { username: string; display_name: string | null; avatar_url: string | null } | undefined;
@@ -49,8 +60,8 @@ export default function PostCard({ post, currentUserId, currentUserPoints = 0, h
     if (!error) {
       setGifted(true);
       setGiftCount(c => c + 1);
-      setShowFloat(true);
-      setTimeout(() => setShowFloat(false), 1400);
+      setShowGiftFloat(true);
+      setTimeout(() => setShowGiftFloat(false), 1400);
       onGift?.();
     }
     setGiftLoading(false);
@@ -141,14 +152,49 @@ export default function PostCard({ post, currentUserId, currentUserPoints = 0, h
           </p>
         )}
 
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-bold" style={{ color: '#9CA3AF' }}>
-            {giftCount} {giftCount === 1 ? 'gift' : 'gifts'}
-          </span>
+        <div className="flex items-center gap-2">
+          {/* Like button */}
+          <motion.button
+            onClick={toggleLike}
+            disabled={isOwn}
+            whileTap={!isOwn ? { scale: 0.88 } : {}}
+            className="flex items-center gap-1.5 px-3 py-2 font-black text-sm disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              background:   liked ? '#FFF0EB' : '#F9FAFB',
+              color:        liked ? '#FF6B35' : INK,
+              border:       `2px solid ${INK}`,
+              boxShadow:    `2px 2px 0 ${INK}`,
+              borderRadius: '8px',
+              minHeight:    '36px',
+            }}
+            aria-label={liked ? 'Unlike' : 'Like'}
+          >
+            <Heart size={15} fill={liked ? '#FF6B35' : 'none'} color={liked ? '#FF6B35' : INK} aria-hidden="true" />
+            <span>{likeCount}</span>
+          </motion.button>
 
-          <div className="relative">
+          {/* Comment toggle */}
+          <button
+            onClick={() => setShowComments(v => !v)}
+            className="flex items-center gap-1.5 px-3 py-2 font-black text-sm"
+            style={{
+              background:   showComments ? '#FFF9E6' : '#F9FAFB',
+              color:        INK,
+              border:       `2px solid ${INK}`,
+              boxShadow:    `2px 2px 0 ${INK}`,
+              borderRadius: '8px',
+              minHeight:    '36px',
+            }}
+            aria-label={showComments ? 'Hide comments' : 'Show comments'}
+          >
+            <MessageCircle size={15} aria-hidden="true" />
+            <span>{post.comment_count ?? 0}</span>
+          </button>
+
+          {/* Gift button */}
+          <div className="relative ml-auto">
             <AnimatePresence>
-              {showFloat && (
+              {showGiftFloat && (
                 <motion.span
                   initial={{ opacity: 1, y: 0 }}
                   animate={{ opacity: 0, y: -32 }}
@@ -184,6 +230,17 @@ export default function PostCard({ post, currentUserId, currentUserPoints = 0, h
           </div>
         </div>
       </div>
+
+      {/* Comment section */}
+      <AnimatePresence>
+        {showComments && (
+          <CommentSection
+            postId={post.id}
+            postOwnerId={post.user_id}
+            currentUserId={currentUserId}
+          />
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 }

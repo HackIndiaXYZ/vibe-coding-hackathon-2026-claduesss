@@ -61,6 +61,8 @@ export default function NotificationsPage() {
       case 'follow_request':  return `${name} wants to follow you`;
       case 'follow_accepted': return `${name} accepted your follow request`;
       case 'gift_received':   return `${name} gifted you a smile 😊`;
+      case 'comment':         return `${name} commented on your post`;
+      case 'like':            return `${name} liked your post ❤️`;
       default: return '';
     }
   }

@@ -1,4 +1,4 @@
--- SmileChain — Initial Schema
+-- SmileChain — Full Schema
 -- Run this entire file in Supabase Dashboard → SQL Editor → New query → Run
 
 -- Users (extends Supabase auth.users)
@@ -48,29 +48,51 @@ CREATE TABLE public.smile_gifts (
   CHECK (giver_id != receiver_id)
 );
 
+-- Comments
+CREATE TABLE public.comments (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id    uuid NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
+  user_id    uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  body       text NOT NULL CHECK (char_length(body) BETWEEN 1 AND 500),
+  created_at timestamptz DEFAULT now()
+);
+
+-- Likes
+CREATE TABLE public.likes (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id    uuid NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
+  user_id    uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  created_at timestamptz DEFAULT now(),
+  UNIQUE (post_id, user_id)
+);
+
 -- Notifications
 CREATE TABLE public.notifications (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         uuid NOT NULL REFERENCES public.users ON DELETE CASCADE,
   actor_id        uuid NOT NULL REFERENCES public.users ON DELETE CASCADE,
-  type            text NOT NULL CHECK (type IN ('follow_request', 'follow_accepted', 'gift_received')),
+  type            text NOT NULL CHECK (type IN ('follow_request', 'follow_accepted', 'gift_received', 'comment', 'like')),
   post_id         uuid REFERENCES public.posts ON DELETE CASCADE,
   is_read         boolean DEFAULT false,
   created_at      timestamptz DEFAULT now()
 );
 
 -- Indexes
-CREATE INDEX idx_posts_user_id ON public.posts (user_id);
-CREATE INDEX idx_posts_created_at ON public.posts (created_at DESC);
-CREATE INDEX idx_follows_follower ON public.follows (follower_id);
-CREATE INDEX idx_follows_following ON public.follows (following_id);
-CREATE INDEX idx_notifications_user ON public.notifications (user_id, is_read, created_at DESC);
+CREATE INDEX idx_posts_user_id       ON public.posts        (user_id);
+CREATE INDEX idx_posts_created_at    ON public.posts        (created_at DESC);
+CREATE INDEX idx_follows_follower    ON public.follows      (follower_id);
+CREATE INDEX idx_follows_following   ON public.follows      (following_id);
+CREATE INDEX idx_notifications_user  ON public.notifications(user_id, is_read, created_at DESC);
+CREATE INDEX comments_post_id_idx    ON public.comments     (post_id);
+CREATE INDEX likes_post_id_idx       ON public.likes        (post_id);
 
 -- Enable RLS
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.smile_gifts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.posts         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.follows       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.smile_gifts   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.comments      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.likes         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS: users
@@ -98,35 +120,63 @@ CREATE POLICY "posts_update_own" ON public.posts FOR UPDATE USING (auth.uid() = 
 CREATE POLICY "posts_delete_own" ON public.posts FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS: follows
-CREATE POLICY "follows_select_own" ON public.follows FOR SELECT USING (
-  auth.uid() = follower_id OR auth.uid() = following_id
-);
-CREATE POLICY "follows_insert_auth" ON public.follows FOR INSERT WITH CHECK (
-  auth.uid() = follower_id
-);
-CREATE POLICY "follows_update_target" ON public.follows FOR UPDATE USING (
-  auth.uid() = following_id
-);
-CREATE POLICY "follows_delete_own" ON public.follows FOR DELETE USING (
-  auth.uid() = follower_id
-);
+CREATE POLICY "follows_select_own"    ON public.follows FOR SELECT USING (auth.uid() = follower_id OR auth.uid() = following_id);
+CREATE POLICY "follows_insert_auth"   ON public.follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+CREATE POLICY "follows_update_target" ON public.follows FOR UPDATE USING (auth.uid() = following_id);
+CREATE POLICY "follows_delete_own"    ON public.follows FOR DELETE USING (auth.uid() = follower_id);
 
 -- RLS: smile_gifts
-CREATE POLICY "gifts_select_own" ON public.smile_gifts FOR SELECT USING (
-  auth.uid() = giver_id OR auth.uid() = receiver_id
-);
-CREATE POLICY "gifts_insert_auth" ON public.smile_gifts FOR INSERT WITH CHECK (
-  auth.uid() = giver_id
-);
+CREATE POLICY "gifts_select_own"  ON public.smile_gifts FOR SELECT USING (auth.uid() = giver_id OR auth.uid() = receiver_id);
+CREATE POLICY "gifts_insert_auth" ON public.smile_gifts FOR INSERT WITH CHECK (auth.uid() = giver_id);
+
+-- RLS: comments
+CREATE POLICY "comments_select" ON public.comments FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.posts p
+      JOIN public.users u ON u.id = p.user_id
+      WHERE p.id = comments.post_id
+        AND (
+          u.is_private = false
+          OR p.user_id = auth.uid()
+          OR EXISTS (
+            SELECT 1 FROM public.follows f
+            WHERE f.follower_id = auth.uid()
+              AND f.following_id = p.user_id
+              AND f.status = 'accepted'
+          )
+        )
+    )
+  );
+CREATE POLICY "comments_insert" ON public.comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "comments_delete" ON public.comments FOR DELETE USING (auth.uid() = user_id);
+
+-- RLS: likes
+CREATE POLICY "likes_select" ON public.likes FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.posts p
+      JOIN public.users u ON u.id = p.user_id
+      WHERE p.id = likes.post_id
+        AND (
+          u.is_private = false
+          OR p.user_id = auth.uid()
+          OR EXISTS (
+            SELECT 1 FROM public.follows f
+            WHERE f.follower_id = auth.uid()
+              AND f.following_id = p.user_id
+              AND f.status = 'accepted'
+          )
+        )
+    )
+  );
+CREATE POLICY "likes_insert" ON public.likes FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "likes_delete" ON public.likes FOR DELETE USING (auth.uid() = user_id);
 
 -- RLS: notifications
-CREATE POLICY "notif_select_own" ON public.notifications FOR SELECT USING (
-  auth.uid() = user_id
-);
+CREATE POLICY "notif_select_own"  ON public.notifications FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "notif_insert_auth" ON public.notifications FOR INSERT WITH CHECK (true);
-CREATE POLICY "notif_update_own" ON public.notifications FOR UPDATE USING (
-  auth.uid() = user_id
-);
+CREATE POLICY "notif_update_own"  ON public.notifications FOR UPDATE USING (auth.uid() = user_id);
 
 -- Auto-create user row on Google sign-in
 CREATE OR REPLACE FUNCTION public.handle_new_user()

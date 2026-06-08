@@ -20,8 +20,27 @@ export interface Post {
   smile_tier: SmileTier;
   smile_points: number;
   gift_count: number;
+  comment_count: number;
+  like_count: number;
+  has_liked?: boolean;
   created_at: string;
   user?: Pick<User, 'username' | 'display_name' | 'avatar_url'>;
+}
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+  user?: Pick<User, 'username' | 'display_name' | 'avatar_url'>;
+}
+
+export interface Like {
+  id: string;
+  post_id: string;
+  user_id: string;
+  created_at: string;
 }
 
 export interface Follow {
@@ -40,7 +59,7 @@ export interface SmileGift {
   created_at: string;
 }
 
-export type NotificationType = 'follow_request' | 'follow_accepted' | 'gift_received';
+export type NotificationType = 'follow_request' | 'follow_accepted' | 'gift_received' | 'comment' | 'like';
 
 export interface Notification {
   id: string;
