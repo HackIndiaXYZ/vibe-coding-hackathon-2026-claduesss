@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Search, User } from 'lucide-react';
+import { Search, SearchX, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { User as UserType } from '@/types';
 
@@ -40,11 +40,11 @@ export default function SearchPage() {
         className="mb-6 inline-flex items-center gap-3"
       >
         <div
-          className="flex h-10 w-10 items-center justify-center text-xl"
+          className="flex h-10 w-10 items-center justify-center"
           style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '8px' }}
           aria-hidden="true"
         >
-          🔍
+          <Search size={20} style={{ color: INK }} />
         </div>
         <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
           Search
@@ -85,7 +85,9 @@ export default function SearchPage() {
           style={{ border: `2.5px solid ${INK}`, boxShadow: `5px 5px 0 ${INK}`, borderRadius: '12px' }}
           aria-live="polite"
         >
-          <span className="text-4xl mb-3 block" role="img" aria-label="person shrugging">🤷</span>
+          <div className="flex h-16 w-16 items-center justify-center mx-auto mb-4" style={{ background: '#F3F4F6', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '10px' }} aria-hidden="true">
+            <SearchX size={28} style={{ color: INK }} />
+          </div>
           <p className="font-black" style={{ color: INK }}>No users found</p>
           <p className="text-sm mt-1 font-semibold" style={{ color: '#6B7280' }}>Try a different username</p>
         </motion.div>
@@ -97,7 +99,9 @@ export default function SearchPage() {
           className="text-center py-16 bg-white"
           style={{ border: `2.5px solid ${INK}`, boxShadow: `5px 5px 0 ${INK}`, borderRadius: '12px' }}
         >
-          <span className="text-4xl mb-3 block" role="img" aria-label="magnifying glass">🔍</span>
+          <div className="flex h-16 w-16 items-center justify-center mx-auto mb-4" style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '10px' }} aria-hidden="true">
+            <Search size={28} style={{ color: INK }} />
+          </div>
           <p className="font-black" style={{ color: INK }}>Find people to follow</p>
           <p className="text-sm mt-1 font-semibold" style={{ color: '#6B7280' }}>Type a username above</p>
         </div>

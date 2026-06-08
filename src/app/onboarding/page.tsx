@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
-import { Lock, Globe, ArrowRight } from 'lucide-react';
+import { Lock, Globe, ArrowRight, Smile } from 'lucide-react';
 
 const INK = '#1A1040';
 
@@ -74,11 +74,11 @@ export default function OnboardingPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center text-4xl"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center"
             style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '12px' }}
             aria-hidden="true"
           >
-            👋
+            <Smile size={32} style={{ color: INK }} />
           </div>
           <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
             Almost There!

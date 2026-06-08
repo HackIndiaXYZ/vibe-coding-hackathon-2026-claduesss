@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Compass } from 'lucide-react';
+import { Home, Compass, Users } from 'lucide-react';
 import PostCard from '@/components/PostCard';
 import { useFeedPosts } from '@/hooks/usePosts';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -43,11 +43,11 @@ export default function FeedPage() {
         className="mb-8 inline-flex items-center gap-3"
       >
         <div
-          className="flex h-10 w-10 items-center justify-center text-xl"
+          className="flex h-10 w-10 items-center justify-center"
           style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '8px' }}
           aria-hidden="true"
         >
-          🏠
+          <Home size={20} style={{ color: INK }} />
         </div>
         <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
           Your Feed
@@ -70,11 +70,11 @@ export default function FeedPage() {
           style={{ border: `2.5px solid ${INK}`, boxShadow: `5px 5px 0 ${INK}`, borderRadius: '12px', padding: '48px 32px' }}
         >
           <div
-            className="text-5xl mb-4 flex h-20 w-20 items-center justify-center mx-auto"
+            className="flex h-20 w-20 items-center justify-center mx-auto"
             style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}`, borderRadius: '12px' }}
-            role="img" aria-label="wave"
+            aria-hidden="true"
           >
-            👋
+            <Users size={36} style={{ color: INK }} />
           </div>
           <h2 className="text-xl font-black mb-2" style={{ color: INK }}>No smiles yet</h2>
           <p className="text-sm font-semibold mb-6" style={{ color: '#6B7280' }}>

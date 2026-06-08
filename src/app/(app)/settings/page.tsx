@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LogOut, Trash2, Globe, Lock } from 'lucide-react';
+import { LogOut, Trash2, Globe, Lock, Settings } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
@@ -94,11 +94,11 @@ export default function SettingsPage() {
         className="mb-8 inline-flex items-center gap-3"
       >
         <div
-          className="flex h-10 w-10 items-center justify-center text-xl"
+          className="flex h-10 w-10 items-center justify-center"
           style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '8px' }}
           aria-hidden="true"
         >
-          ⚙️
+          <Settings size={20} style={{ color: INK }} />
         </div>
         <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
           Settings

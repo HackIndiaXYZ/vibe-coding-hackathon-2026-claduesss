@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { User } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import type { Notification } from '@/types';
@@ -73,11 +73,11 @@ export default function NotificationsPage() {
         className="mb-8 inline-flex items-center gap-3"
       >
         <div
-          className="flex h-10 w-10 items-center justify-center text-xl"
+          className="flex h-10 w-10 items-center justify-center"
           style={{ background: '#FF6B35', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '8px' }}
           aria-hidden="true"
         >
-          🔔
+          <Bell size={20} style={{ color: '#fff' }} />
         </div>
         <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
           Notifications
@@ -108,11 +108,11 @@ export default function NotificationsPage() {
           style={{ border: `2.5px solid ${INK}`, boxShadow: `5px 5px 0 ${INK}`, borderRadius: '12px', padding: '48px 32px' }}
         >
           <div
-            className="text-4xl mb-4 flex h-20 w-20 items-center justify-center mx-auto"
+            className="flex h-20 w-20 items-center justify-center mx-auto mb-4"
             style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}`, borderRadius: '12px' }}
-            role="img" aria-label="bell"
+            aria-hidden="true"
           >
-            🔔
+            <Bell size={36} style={{ color: INK }} />
           </div>
           <h2 className="text-xl font-black mb-2" style={{ color: INK }}>All caught up!</h2>
           <p className="text-sm font-semibold" style={{ color: '#6B7280' }}>No notifications yet.</p>

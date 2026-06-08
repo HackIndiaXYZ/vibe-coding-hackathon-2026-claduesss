@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Compass, Camera } from 'lucide-react';
 import PostCard from '@/components/PostCard';
 import { useExplorePosts } from '@/hooks/usePosts';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -37,11 +38,11 @@ export default function ExplorePage() {
         className="mb-8 inline-flex items-center gap-3"
       >
         <div
-          className="flex h-10 w-10 items-center justify-center text-xl"
+          className="flex h-10 w-10 items-center justify-center"
           style={{ background: '#FF6B35', border: `2.5px solid ${INK}`, boxShadow: `3px 3px 0 ${INK}`, borderRadius: '8px' }}
           aria-hidden="true"
         >
-          🧭
+          <Compass size={20} style={{ color: '#fff' }} />
         </div>
         <h1 className="text-3xl font-black" style={{ fontFamily: 'var(--font-nunito)', color: INK }}>
           Explore
@@ -62,11 +63,11 @@ export default function ExplorePage() {
           style={{ border: `2.5px solid ${INK}`, boxShadow: `5px 5px 0 ${INK}`, borderRadius: '12px', padding: '48px 32px' }}
         >
           <div
-            className="text-4xl mb-4 flex h-20 w-20 items-center justify-center mx-auto"
+            className="flex h-20 w-20 items-center justify-center mx-auto mb-4"
             style={{ background: '#FFD93D', border: `2.5px solid ${INK}`, boxShadow: `4px 4px 0 ${INK}`, borderRadius: '12px' }}
-            role="img" aria-label="camera"
+            aria-hidden="true"
           >
-            📸
+            <Camera size={36} style={{ color: INK }} />
           </div>
           <h2 className="text-xl font-black mb-2" style={{ color: INK }}>No posts yet</h2>
           <p className="text-sm font-semibold" style={{ color: '#6B7280' }}>Be the first to share a smile!</p>
