@@ -1,357 +1,187 @@
 # SmileChain
 
-> A social platform where your genuine smile is the only currency.
-
-### 🌐 [smilechain.ashwinsi.in](https://smilechain.ashwinsi.in)
-
-SmileChain is an Instagram-like app where smile intensity = points. Post a photo, let AI detect your smile, earn Smile Points, and gift them to others. Built for **HackIndia Vibe Coding Hackathon 2026**.
+### 🌐 Live — [smilechain.ashwinsi.in](https://smilechain.ashwinsi.in)
 
 ---
 
-## Core Idea
+## The World Needs More Real Smiles
 
-Social media drives anxiety through likes and follower counts. SmileChain replaces all of that with one metric — **your genuine smile**. You can't buy clout. You can't fake it. You just smile.
+We live in a world where social media has taught people to perform happiness rather than feel it. Every scroll is a highlight reel — filters, angles, forced poses, fake smiles for likes. People have learned to optimize for approval instead of joy.
 
----
+**SmileChain exists because real smiles are rare, and they deserve to be celebrated.**
 
-## Smile Point Tiers
-
-| Score | Tier | Points | Vibe |
-|---|---|---|---|
-| 0.0 – 0.4 | 😐 None | 0 pts | Try again! |
-| 0.4 – 0.6 | 😊 Mild | 10 pts | Gentle warmth |
-| 0.6 – 0.8 | 😄 Big | 30 pts | Full sunshine |
-| 0.8 – 1.0 | 😁 Beam | 50 pts | Maximum smile energy |
+This is not another platform where you chase followers or stress over engagement. It is a place where the only thing that matters is whether you are genuinely smiling — and AI is the judge, not people.
 
 ---
 
-## System Architecture
+## The Problem
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'secondaryColor': '#FFF3CD', 'tertiaryColor': '#FFFBF0', 'clusterBkg': '#FFFBF0', 'clusterBorder': '#FFD93D'}}}%%
-graph TD
-    classDef client fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
-    classDef server fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
-    classDef db fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
-    classDef store fill:#374151,stroke:#6B7280,color:#ffffff
+Instagram, TikTok, and every platform like them reward content that performs well — not people who feel well. The result:
 
-    subgraph Client["🌐 Browser"]
-        UI[Next.js App Router]:::client
-        FA[MediaPipe Face Mesh - Smile Detection]:::client
-        FM[Framer Motion - Animations]:::client
-    end
+- People fake happiness to fit in
+- Anxiety and comparison culture dominate
+- The metric for "doing well" online has nothing to do with actually being happy
 
-    subgraph Server["⚡ API Routes"]
-        CAP["/api/caption - Caption Generator"]:::server
-        AUTH["/api/auth/callback - OAuth Handler"]:::server
-    end
+The tools meant to connect us have made authentic expression rarer, not more common.
 
-    subgraph Supabase["🗄️ Supabase"]
-        DB[(Postgres DB)]:::db
-        ST[(Storage - Images)]:::store
-        AU[Google OAuth]:::db
-        RLS[Row Level Security]:::store
-    end
+---
 
-    UI -->|upload photo| FA
-    FA -->|smile score + tier| CAP
-    CAP -->|caption| UI
-    UI -->|store image| ST
-    UI -->|insert post row| DB
-    AU -->|OAuth callback| AUTH
-    AUTH -->|session cookie| UI
-    DB --- RLS
+## How SmileChain Solves It
+
+SmileChain replaces every vanity metric with one honest signal: **your genuine smile**.
+
+You post a photo. AI detects your smile intensity in the browser — no server, no privacy risk. The bigger and more genuine your smile, the more Smile Points you earn. You cannot buy points. You cannot fake your way to the top. You just smile.
+
+Points can be gifted to others whose smiles made you happy. The economy runs entirely on real human warmth.
+
+| Smile | Tier | Points |
+|-------|------|--------|
+| 😐 Flat | None | 0 pts |
+| 😊 Genuine | Mild | 10 pts |
+| 😄 Joyful | Big | 30 pts |
+| 😁 Beaming | Beam | 50 pts |
+
+---
+
+## How It Works
+
+1. **Sign in** with Google
+2. **Post a photo** — upload or take a selfie
+3. **AI detects your smile** entirely in the browser using face-api.js
+4. **Earn Smile Points** based on smile intensity — tier shown instantly
+5. **AI writes your caption** using GPT-3.5, tuned to your smile tier
+6. **Share it** — public feed or just your followers
+7. **Gift points** to posts that genuinely made you smile
+
+---
+
+## The Startup Vision
+
+SmileChain is not just a social app. It is infrastructure for a happiness economy.
+
+### The Core Insight
+
+Every business wants happy customers, happy employees, and happy communities. SmileChain has what no other platform has — a **verified, AI-measured signal of genuine human happiness**. That data and that engagement loop is valuable far beyond a consumer app.
+
+### Business Model Canvas
+
+**Customer Segments**
+- Consumers: anyone who wants a social feed that feels good
+- Enterprises: HR teams running employee wellness programs
+- Brands: companies that want authentic emotional connection with customers
+- Healthcare: mental health platforms, therapists, wellness apps
+- Insurers: health insurance companies incentivizing positive behaviours
+
+**Value Propositions**
+- For users: a social platform that rewards you for actually being happy
+- For businesses: verified happiness engagement — not impressions, not clicks
+- For insurers: measurable daily wellness signal tied to a real person
+- For brands: sponsoring joy instead of anxiety
+
+**Revenue Streams**
+
+| Stream | Model |
+|--------|-------|
+| **B2B Wellness API** | Companies pay per employee/month to run internal smile challenges — teams earn Smile Points redeemable for perks |
+| **Brand Smile Challenges** | Brands sponsor weekly challenges (e.g. "Coca-Cola Smile Week") — winners get brand rewards, brand gets authentic UGC |
+| **Insurance Tie-ups** | Health insurers offer premium discounts to users who maintain smile streaks — SmileChain provides the verified score feed |
+| **Premium Subscriptions** | Users pay for advanced analytics, custom profile themes, streak shields |
+| **Smile Credits (B2C)** | Users can buy Smile Credits to gift to others — like tipping on Twitch but for happiness |
+
+**Key Partners**
+- Corporate HR platforms (Darwinbox, BambooHR, Workday) — embed SmileChain wellness modules
+- Health insurers (Star Health, Niva Bupa) — reward streak data as wellness proof
+- Consumer brands (beverage, snacks, lifestyle) — sponsor smile challenges
+- Mental health apps (YourDost, Wysa) — SmileChain as daily mood-tracking surface
+- Gyms and fitness chains — smile as post-workout celebration metric
+
+**Key Activities**
+- AI smile detection accuracy improvements
+- B2B API and dashboard for enterprise clients
+- Brand challenge campaign tooling
+- Community growth and content moderation
+
+**Key Resources**
+- Proprietary browser-based smile scoring (privacy-first, no data stored)
+- Smile Points economy and gifting loop
+- User-generated happiness content
+
+**Cost Structure**
+- Supabase hosting + storage
+- OpenAI API (caption generation)
+- Vercel compute
+- B2B sales and integrations team (post-seed)
+
+### How the B2B Loop Works
+
+```
+Company pays SmileChain
+  → Employees get a company SmileChain workspace
+  → Post smiles daily → earn Smile Points
+  → Points convert to company perks (leave, vouchers, recognition)
+  → HR dashboard shows team happiness trends over time
+  → Company renews because engagement and morale data is real
 ```
 
----
+### Why This Is Defensible
 
-## Upload Flow
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'edgeLabelBackground': '#FFFBF0'}}}%%
-flowchart LR
-    classDef start fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
-    classDef process fill:#FFF3CD,stroke:#FFD93D,color:#1F2937
-    classDef decision fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
-    classDef tier0 fill:#F3F4F6,stroke:#9CA3AF,color:#374151
-    classDef tier1 fill:#FEF9C3,stroke:#EAB308,color:#713F12
-    classDef tier2 fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
-    classDef tier3 fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
-    classDef finish fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
-
-    A([📷 Pick Photo\nor Camera]):::start --> B[MediaPipe\nDetects Smile]:::process
-    B --> C{Score?}:::decision
-    C -->|0–40%| D[😐 None - 0 pts]:::tier0
-    C -->|40–60%| E[😊 Mild - 10 pts]:::tier1
-    C -->|60–80%| F[😄 Big - 30 pts]:::tier2
-    C -->|80–100%| G[😁 Beam - 50 pts\n🎉 Confetti!]:::tier3
-    D & E & F & G --> H[AI Caption\nGenerated]:::process
-    H --> I[User Edits\nCaption]:::process
-    I --> J[Upload to\nSupabase Storage]:::process
-    J --> K[Insert Post\nRow in DB]:::process
-    K --> L([🚀 Redirect\nto Feed]):::finish
-```
-
----
-
-## Auth Flow
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'actorBkg': '#FFD93D', 'actorBorder': '#FF6B35', 'actorTextColor': '#1F2937', 'actorLineColor': '#FF6B35', 'signalColor': '#FF6B35', 'signalTextColor': '#1F2937', 'labelBoxBkgColor': '#FFF3CD', 'labelBoxBorderColor': '#FFD93D', 'labelTextColor': '#1F2937', 'loopTextColor': '#1F2937', 'noteBkgColor': '#FFD93D', 'noteBorderColor': '#FF6B35', 'noteTextColor': '#1F2937', 'activationBkgColor': '#FFF3CD', 'activationBorderColor': '#FF6B35', 'sequenceNumberColor': '#ffffff'}}}%%
-sequenceDiagram
-    actor User
-    participant App as ⚡ Next.js App
-    participant Supabase as 🗄️ Supabase
-    participant Google as 🔵 Google
-
-    User->>App: Click "Sign in with Google"
-    App->>Supabase: signInWithOAuth(google)
-    Supabase->>Google: Redirect to consent screen
-    Google->>User: Show consent
-    User->>Google: Approve
-    Google->>Supabase: Auth code
-    Supabase->>App: Redirect /api/auth/callback
-    App->>Supabase: exchangeCodeForSession()
-    Supabase->>App: Session + user data
-
-    alt username is null (first login)
-        App->>User: Redirect /onboarding
-        User->>App: Set username + privacy
-        App->>Supabase: UPDATE users SET username
-        App->>User: Redirect /feed
-    else has username
-        App->>User: Redirect /feed
-    end
-```
-
----
-
-## Follow System
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'edgeLabelBackground': '#FFFBF0'}}}%%
-flowchart TD
-    classDef start fill:#FFD93D,stroke:#FF6B35,color:#1F2937,font-weight:bold
-    classDef decision fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
-    classDef action fill:#FFF3CD,stroke:#FFD93D,color:#1F2937
-    classDef accept fill:#D1FAE5,stroke:#10B981,color:#064E3B,font-weight:bold
-    classDef decline fill:#FEE2E2,stroke:#EF4444,color:#7F1D1D,font-weight:bold
-    classDef finish fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
-
-    A([👆 User clicks Follow]):::start --> B{Private\naccount?}:::decision
-    B -->|No — Public| C[INSERT follows\nstatus = accepted]:::action
-    B -->|Yes — Private| D[INSERT follows\nstatus = pending]:::action
-    D --> E[INSERT notification\ntype = follow_request]:::action
-    E --> F[Target sees\nnotification 🔔]:::action
-    F --> G{Decision?}:::decision
-    G -->|Accept ✅| H[UPDATE follows\nstatus = accepted]:::accept
-    H --> I[INSERT notification\ntype = follow_accepted]:::accept
-    G -->|Decline ❌| J[DELETE follows row]:::decline
-    C --> K([👀 Follower sees\ntarget's posts]):::finish
-    I --> K
-```
-
----
-
-## Gifting System
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'actorBkg': '#FFD93D', 'actorBorder': '#FF6B35', 'actorTextColor': '#1F2937', 'actorLineColor': '#FF6B35', 'signalColor': '#FF6B35', 'signalTextColor': '#1F2937', 'labelBoxBkgColor': '#FFF3CD', 'labelBoxBorderColor': '#FFD93D', 'labelTextColor': '#1F2937', 'noteBkgColor': '#FFD93D', 'noteBorderColor': '#FF6B35', 'noteTextColor': '#1F2937', 'activationBkgColor': '#FFF3CD', 'activationBorderColor': '#FF6B35'}}}%%
-sequenceDiagram
-    actor Giver as 😊 Giver
-    participant App as ⚡ SmileChain
-    participant DB as 🗄️ Supabase DB
-
-    Giver->>App: Click "Gift Smile" on post
-    App->>App: Check — not own post,\nnot already gifted,\nhas ≥1 point
-    App->>DB: INSERT smile_gifts row
-    DB->>DB: Trigger: UPDATE posts\nSET gift_count + 1
-    DB->>DB: Trigger: UPDATE users\ngiver points − 1
-    DB->>DB: Trigger: UPDATE users\nreceiver points + 1
-    DB->>DB: INSERT notification\ntype = gift_received
-    App->>Giver: Show floating +1 animation 🎁
-```
-
----
-
-## Database Schema
-
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#FFD93D', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#FF6B35', 'lineColor': '#FF6B35', 'tertiaryColor': '#FFF3CD', 'edgeLabelBackground': '#FFFBF0', 'attributeBackgroundColorEven': '#FFFBF0', 'attributeBackgroundColorOdd': '#FFF3CD'}}}%%
-erDiagram
-    users {
-        uuid id PK
-        text username
-        text display_name
-        text avatar_url
-        int smile_points
-        bool is_private
-        timestamptz created_at
-    }
-
-    posts {
-        uuid id PK
-        uuid user_id FK
-        text image_url
-        float smile_score
-        text smile_tier
-        text caption
-        int smile_points
-        int gift_count
-        timestamptz created_at
-    }
-
-    follows {
-        uuid id PK
-        uuid follower_id FK
-        uuid following_id FK
-        text status
-        timestamptz created_at
-    }
-
-    smile_gifts {
-        uuid id PK
-        uuid giver_id FK
-        uuid receiver_id FK
-        uuid post_id FK
-        timestamptz created_at
-    }
-
-    notifications {
-        uuid id PK
-        uuid user_id FK
-        uuid actor_id FK
-        text type
-        uuid post_id FK
-        bool is_read
-        timestamptz created_at
-    }
-
-    users ||--o{ posts : "creates"
-    users ||--o{ follows : "follower_id"
-    users ||--o{ follows : "following_id"
-    users ||--o{ smile_gifts : "gives"
-    users ||--o{ smile_gifts : "receives"
-    posts ||--o{ smile_gifts : "receives"
-    users ||--o{ notifications : "receives"
-```
+Competitors cannot replicate the core loop without rebuilding the community. The smile score is not just a feature — it is the identity of every user on the platform. A brand doing a "Smile Campaign" on Instagram gets engagement metrics. On SmileChain they get **verified smile scores** from real faces. That is a fundamentally different product.
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
-| Framework | Next.js 16 App Router + TypeScript |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion |
-| Icons | Lucide React |
+|-------|-----------|
+| Framework | Next.js 14 App Router + TypeScript |
+| Styling | Tailwind CSS + shadcn/ui + Framer Motion |
 | Auth | Supabase Google OAuth |
-| Database | Supabase Postgres + RLS |
+| Database | Supabase Postgres + Row Level Security |
 | Storage | Supabase Storage |
-| Smile AI | MediaPipe Face Mesh (runs 100% in browser) |
-| Caption | Tier-based caption pool (no API needed) |
+| Smile AI | face-api.js — runs 100% in browser |
+| Caption AI | OpenAI GPT-3.5 via server-side API route |
 | Deployment | Vercel |
 
 ---
 
 ## Features
 
-- **Google OAuth** — sign in with Google via Supabase
-- **Webcam + Upload** — take a selfie or upload a photo
-- **Smile Detection** — MediaPipe Face Mesh runs entirely client-side, no privacy risk
-- **3-second countdown** — camera capture with animated countdown
-- **Confetti** — fires on Beam smile tier
-- **Public / Private accounts** — control who sees your posts
-- **Follow system** — instant for public, request-based for private
-- **Feed** — posts from people you follow
-- **Explore** — discover public posts from everyone
-- **Search** — find users by username (debounced)
-- **Gifting** — send Smile Points to posts you love
-- **Profile** — posts grid, smile score, follower/following counts
-- **Notifications** — follow requests, gifts, accepted follows
-- **Settings** — update username, toggle privacy, delete account
+- Google OAuth sign-in
+- Upload photo or webcam selfie
+- Client-side smile detection — no data leaves your browser
+- Smile Points earned per post (tier-based)
+- AI-generated captions tuned to your smile
+- Follow system — instant for public, request-based for private
+- Feed from people you follow
+- Explore public posts globally
+- Gift Smile Points to others
+- Comments and likes
+- Notifications — gifts, follows, comments, likes
+- Search users by username
+- Public / private account toggle
+
+---
+
+## Architecture
+
+System diagrams, data flows, DB schema, and project structure → **[docs/architecture.md](docs/architecture.md)**
 
 ---
 
 ## Getting Started
 
 ```bash
-# 1. Install dependencies
 npm install
 
-# 2. Set environment variables
 cp .env.example .env.local
 # Fill in: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, OPENAI_API_KEY
 
-# 3. Run SQL migration in Supabase SQL Editor
-# → supabase/migrations/001_initial.sql
+# Run in Supabase SQL Editor:
+# supabase/migrations/001_initial.sql
 
-# 4. Download MediaPipe Face Landmarker model
-mkdir -p public/models
-curl -sL -o public/models/face_landmarker.task \
-  "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task"
-
-# 5. Start dev server
 npm run dev
 ```
 
 ---
 
-## Pages
-
-| Route | Description |
-|---|---|
-| `/` | Landing page — hero, how it works, tiers, CTA |
-| `/login` | Google OAuth sign-in |
-| `/onboarding` | Set username + public/private (first login only) |
-| `/feed` | Posts from followed users |
-| `/explore` | Public posts from everyone |
-| `/upload` | Upload or take a smiling photo |
-| `/search` | Find users by username |
-| `/profile/[username]` | Profile with posts grid + follow system |
-| `/notifications` | Follow requests, gifts, accepted follows |
-| `/settings` | Username, privacy, delete account |
-
----
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── page.tsx                  # Landing page
-│   ├── login/page.tsx            # Google OAuth
-│   ├── onboarding/page.tsx       # Username setup
-│   ├── (app)/                    # Auth-guarded routes
-│   │   ├── layout.tsx            # Navbar + auth guard
-│   │   ├── feed/page.tsx
-│   │   ├── explore/page.tsx
-│   │   ├── upload/page.tsx
-│   │   ├── search/page.tsx
-│   │   ├── profile/[username]/page.tsx
-│   │   ├── notifications/page.tsx
-│   │   └── settings/page.tsx
-│   └── api/
-│       ├── caption/route.ts      # Caption generation
-│       └── auth/callback/route.ts
-├── components/
-│   ├── Navbar.tsx
-│   ├── PostCard.tsx
-│   ├── SmileReveal.tsx
-│   ├── FollowButton.tsx
-│   └── PrivateLock.tsx
-├── lib/
-│   ├── face-api.ts               # MediaPipe smile detection
-│   ├── smile-points.ts           # Tier mapping
-│   ├── openai.ts                 # Caption pool
-│   └── supabase/{client,server}.ts
-├── hooks/
-│   ├── useCurrentUser.ts
-│   └── usePosts.ts
-└── types/index.ts
-```
-
----
-
-_Built with 😄 at HackIndia Vibe Coding Hackathon 2026 by team **Claduesss**_
+_Built at HackIndia Vibe Coding Hackathon 2026 — by team **Claduesss**_
