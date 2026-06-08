@@ -35,7 +35,7 @@ graph TD
 
     subgraph Client["🌐 Browser"]
         UI[Next.js App Router]:::client
-        FA[face-api.js - Smile Detection]:::client
+        FA[MediaPipe Face Mesh - Smile Detection]:::client
         FM[Framer Motion - Animations]:::client
     end
 
@@ -77,7 +77,7 @@ flowchart LR
     classDef tier3 fill:#FF6B35,stroke:#c04e1c,color:#ffffff,font-weight:bold
     classDef finish fill:#1F2937,stroke:#374151,color:#ffffff,font-weight:bold
 
-    A([📷 Pick Photo\nor Camera]):::start --> B[face-api.js\nDetects Smile]:::process
+    A([📷 Pick Photo\nor Camera]):::start --> B[MediaPipe\nDetects Smile]:::process
     B --> C{Score?}:::decision
     C -->|0–40%| D[😐 None - 0 pts]:::tier0
     C -->|40–60%| E[😊 Mild - 10 pts]:::tier1
@@ -247,7 +247,7 @@ erDiagram
 | Auth | Supabase Google OAuth |
 | Database | Supabase Postgres + RLS |
 | Storage | Supabase Storage |
-| Smile AI | face-api.js (runs 100% in browser) |
+| Smile AI | MediaPipe Face Mesh (runs 100% in browser) |
 | Caption | Tier-based caption pool (no API needed) |
 | Deployment | Vercel |
 
@@ -257,7 +257,7 @@ erDiagram
 
 - **Google OAuth** — sign in with Google via Supabase
 - **Webcam + Upload** — take a selfie or upload a photo
-- **Smile Detection** — face-api.js runs entirely client-side, no privacy risk
+- **Smile Detection** — MediaPipe Face Mesh runs entirely client-side, no privacy risk
 - **3-second countdown** — camera capture with animated countdown
 - **Confetti** — fires on Beam smile tier
 - **Public / Private accounts** — control who sees your posts
@@ -285,15 +285,10 @@ cp .env.example .env.local
 # 3. Run SQL migration in Supabase SQL Editor
 # → supabase/migrations/001_initial.sql
 
-# 4. Download face-api.js models
-mkdir -p public/models && cd public/models
-BASE="https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights"
-curl -sL -O "$BASE/tiny_face_detector_model-weights_manifest.json"
-curl -sL -O "$BASE/tiny_face_detector_model-shard1"
-curl -sL -O "$BASE/face_landmark_68_model-weights_manifest.json"
-curl -sL -O "$BASE/face_landmark_68_model-shard1"
-curl -sL -O "$BASE/face_expression_model-weights_manifest.json"
-curl -sL -O "$BASE/face_expression_model-shard1"
+# 4. Download MediaPipe Face Landmarker model
+mkdir -p public/models
+curl -sL -o public/models/face_landmarker.task \
+  "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task"
 
 # 5. Start dev server
 npm run dev
@@ -345,7 +340,7 @@ src/
 │   ├── FollowButton.tsx
 │   └── PrivateLock.tsx
 ├── lib/
-│   ├── face-api.ts               # Smile detection
+│   ├── face-api.ts               # MediaPipe smile detection
 │   ├── smile-points.ts           # Tier mapping
 │   ├── openai.ts                 # Caption pool
 │   └── supabase/{client,server}.ts
